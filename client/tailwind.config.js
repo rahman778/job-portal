@@ -4,8 +4,22 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: ["class"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#019875',
+        secondary: '#ecc94b',
+        darkGrey: '#181B21',
+        mediumGrey: '#23272F'
+      },
+      fontFamily: {
+        'sans': ['Poppins', 'sans-serif'],
+      },
+      fontSize: {
+        md: '15px',
+      }
+    },
   },
   plugins: [],
 }
