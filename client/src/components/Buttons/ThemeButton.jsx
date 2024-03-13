@@ -13,7 +13,7 @@ const ThemeButton = () => {
 
    return (
       <button
-         className="flex items-center justify-center rounded-full p-2.5 hover:bg-primary/20 dark:hover:bg-primary/20"
+         className="flex items-center justify-center rounded-full p-2.5 hover:bg-primary/20 dark:hover:bg-primary/20 hover-transition"
          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
       >
          {resolvedTheme === "dark" ? (

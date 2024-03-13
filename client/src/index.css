@@ -1,54 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
 .dark {
-   background-color: #181B21
+   background-color: #181b21;
 }
 
-
 @layer components {
-    .button {
-       @apply inline-flex cursor-pointer items-center justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium;
-    }
+   .button {
+      @apply inline-flex cursor-pointer items-center justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium;
+   }
 
-    .primary-btn {
-       @apply text-gray-100 bg-primary hover:bg-primary/90;
-    }
+   .primary-btn {
+      @apply text-gray-100 bg-primary hover:bg-primary/90;
+   }
 
-    .primary-outline-btn {
+   .primary-outline-btn {
       @apply text-gray-700 dark:text-gray-100 bg-transparent hover:bg-primary border border-primary hover:text-gray-100;
    }
- 
-    .secondary-btn {
-       @apply text-slate-400 bg-[#ffffff0d] border border-gray-300 dark:border-gray-700 dark:hover:border-transparent hover:border-gray-200;
-    }
- 
-    .transparent-btn {
-       @apply text-gray-700 dark:text-gray-100 hover:text-primary dark:hover:text-primary;
-    }
 
-    .menu-link {
-      @apply relative before:content-[''] before:absolute before:bottom-0 before:left-0 before:w-0 before:h-0.5 before:bg-primary before:transition-[width] before:ease-in-out before:duration-300 hover:before:w-full
-    }
- 
- 
-    .input {
-       @apply py-3.5 px-4 text-sm text-gray-700 dark:text-gray-100 bg-slate-100 dark:bg-mediumGrey rounded-sm  w-full placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/90;
-    }
- 
-    .link {
-       @apply text-sm text-primary 
-    }
- 
-    .box {
-       @apply bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-300 dark:ring-gray-700 rounded-md px-4 py-5 sm:p-6 lg:p-8 
-    }
-    .label {
-       @apply text-gray-600 dark:text-gray-100 text-sm
-    }
- }
- 
+   .secondary-btn {
+      @apply text-slate-400 bg-[#ffffff0d] border border-gray-300 dark:border-gray-700 dark:hover:border-transparent hover:border-gray-200;
+   }
+
+   .transparent-btn {
+      @apply text-gray-700 dark:text-gray-100 hover:text-primary dark:hover:text-primary;
+   }
+
+   .menu-link {
+      @apply relative before:content-[''] before:absolute before:bottom-0 before:left-0 before:w-0 before:h-0.5 before:bg-primary before:transition-[width] before:ease-in-out before:duration-300 hover:before:w-full;
+   }
+
+   .input {
+      @apply py-3.5 px-4 text-sm text-gray-700 dark:text-gray-100 bg-slate-100 dark:bg-mediumGrey rounded-sm  w-full placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/90 focus:border-transparent;
+   }
+
+   .link {
+      @apply text-sm text-primary;
+   }
+
+   .box {
+      @apply bg-white dark:bg-darkGrey shadow-sm border border-gray-600 hover:border-primary/90  rounded-sm px-4 py-5 sm:p-6 lg:p-8;
+   }
+   .label {
+      @apply text-gray-600 dark:text-gray-100 text-sm;
+   }
+   .hover-transition {
+      @apply transform transition duration-300;
+   }
+}
