@@ -4,6 +4,8 @@ import Dropdown from "../components/Forms/Dropdown";
 import Nav from "../components/Nav/Nav";
 import JobCard from "../components/Cards/JobCard";
 import JobDrawer from "../components/Drawers/JobDrawer";
+import JobFilter from "../components/Filter/JobFilter";
+import JobViewFilter from "../components/Filter/JobViewFilter";
 
 function Layout() {
    const [val, setval] = useState("2");
@@ -37,6 +39,12 @@ function Layout() {
             </div>
             <div className="mt-5">
                <JobCard />
+            </div>
+            <div className="mt-5">
+               <JobViewFilter />
+            </div>
+            <div className="mt-5">
+               <JobFilter />
             </div>
            
          </div>

@@ -11,8 +11,8 @@ const JobHeader = () => {
             </div>
             <div className="mt-2">
                <IconText>
-                  <BuildingOfficeIcon className="text-slate-500 dark:text-slate-300 h-5 w-6 -ml-1" />
-                  <span className="font-medium text-sm">Virtusa</span>
+                  <BuildingOfficeIcon className="text-slate-700 dark:text-slate-300 h-5 w-6 -ml-1" />
+                  <span className="font-medium text-slate-700 dark:text-slate-300 text-sm">Virtusa</span>
                </IconText>
             </div>
          </div>
