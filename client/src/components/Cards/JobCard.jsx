@@ -1,5 +1,8 @@
+import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
+
 import SaveButton from "../Buttons/SaveButton";
 import IconText from "../Core/IconText";
+import Tags from "../Core/Tags";
 
 import {
    CurrencyDollarIcon,
@@ -9,10 +12,22 @@ import {
 } from "@heroicons/react/24/outline";
 
 const JobCard = () => {
+   const navigate = useNavigate();
+   const location = useLocation();
+
+   const openModal = () => {
+      navigate({
+         pathname: location.pathname,
+         search: `?${createSearchParams({
+            navType: "slider",
+            jobId: 1234,
+         })}`,
+      });
+   };
    return (
       <div
          className="w-full bg-white dark:bg-mediumGrey px-5 py-6 border dark:border-slate-600 hover:border-primary dark:hover:border-primary rounded-md hover:bg-primary/5 dark:hover:bg-primary/5 hover-transition cursor-pointer"
-         //@click="openModal()"
+         onClick={openModal}
       >
          <div className="flex justify-between items-center">
             <div className="flex flex-row gap-x-3">
@@ -49,20 +64,14 @@ const JobCard = () => {
          </div>
 
          <div className="flex flex-wrap items-center gap-x-3">
-            <span className="text-xs text-primary bg-emerald-600/10 px-3 py-1 rounded-xl hover-transition hover:bg-primary hover:text-white mt-3">
-               React
-            </span>
-            <span className="text-xs text-primary bg-emerald-600/10 px-3 py-1 rounded-xl hover-transition hover:bg-primary hover:text-white mt-3">
-               Javascript
-            </span>
-            <span className="text-xs text-primary bg-emerald-600/10 px-3 py-1 rounded-xl hover-transition hover:bg-primary hover:text-white mt-3">
-               Laravel
-            </span>
+            <Tags name="React" />
+            <Tags name="Javascript" />
+            <Tags name="Laravel" />
          </div>
 
          <div className="flex items-center justify-between mt-3">
             <IconText>
-               <MapPinIcon class="text-slate-500 dark:text-slate-300 h-8 w-4" />
+               <MapPinIcon className="text-slate-500 dark:text-slate-300 h-8 w-4" />
                <span>Banglore, India</span>
             </IconText>
 

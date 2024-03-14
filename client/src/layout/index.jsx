@@ -3,6 +3,7 @@ import Checkbox from "../components/Forms/Checkbox";
 import Dropdown from "../components/Forms/Dropdown";
 import Nav from "../components/Nav/Nav";
 import JobCard from "../components/Cards/JobCard";
+import JobDrawer from "../components/Drawers/JobDrawer";
 
 function Layout() {
    const [val, setval] = useState("2");
@@ -37,7 +38,9 @@ function Layout() {
             <div className="mt-5">
                <JobCard />
             </div>
+           
          </div>
+         <JobDrawer />
       </div>
    );
 }
