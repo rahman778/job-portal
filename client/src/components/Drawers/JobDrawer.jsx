@@ -28,20 +28,20 @@ const JobDrawer = () => {
          <div className="grid lg:grid-cols-12 grid-cols-1 gap-8 mt-4">
             <div className="lg:col-span-8">
                <JobHeader />
-               <p className="text-slate-700 dark:text-slate-400 text-md mt-6">
+               <p className="text-slate-700 dark:text-slate-300 text-md mt-6">
                   One disadvantage of Lorum Ipsum is that in Latin certain
                   letters appear more frequently than others - which creates a
                   distinct visual impression. Moreover, in Latin only words at
                   the beginning of sentences are capitalized.
                </p>
-               <p className="text-slate-700 dark:text-slate-400 text-md mt-6">
+               <p className="text-slate-700 dark:text-slate-300 text-md mt-6">
                   This means that Lorem Ipsum cannot accurately represent, for
                   example, German, in which all nouns are capitalized. Thus,
                   Lorem Ipsum has only limited suitability as a visual filler
                   for German texts. If the fill text is intended to illustrate
                   the characteristics of different typefaces.
                </p>
-               <p className="text-slate-700 dark:text-slate-400 text-md mt-6">
+               <p className="text-slate-700 dark:text-slate-300 text-md mt-6">
                   This means that Lorem Ipsum cannot accurately represent, for
                   example, German, in which all nouns are capitalized. Thus,
                   Lorem Ipsum has only limited suitability as a visual filler
