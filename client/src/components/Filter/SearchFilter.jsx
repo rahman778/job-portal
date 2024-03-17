@@ -1,8 +1,15 @@
-import { MagnifyingGlassIcon, MapPinIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
+
+import {
+   MagnifyingGlassIcon,
+   MapPinIcon,
+   ArrowRightIcon,
+} from "@heroicons/react/24/outline";
 
 const SearchFilter = () => {
+   const navigate = useNavigate();
    return (
-      <div className="flex flex-col sm:flex-row bg-white rounded-[30px]">
+      <div className="flex flex-col sm:flex-row bg-white rounded-[30px] shadow-sm">
          <div className="relative flex-1 ">
             <span className="absolute inset-y-0 left-0 flex items-center pl-4">
                <MagnifyingGlassIcon className="text-amber-500 h-5 w-5" />
@@ -24,8 +31,11 @@ const SearchFilter = () => {
             />
          </div>
          <div className="flex-1 mt-3 sm:mt-0">
-            <button className="group py-4 bg-primary w-full rounded-[30px] hover-transition hover:bg-primary/90 flex items-center gap-x-3 justify-center">
-               <span> Find Jobs</span>
+            <button
+               onClick={() => navigate("/search")}
+               className="group py-4 bg-primary w-full rounded-[30px] hover-transition hover:bg-primary/90 flex items-center gap-x-3 justify-center"
+            >
+               <span className="text-white">Find Jobs</span>
                <ArrowRightIcon className="text-white h-4 w-4 stroke-2 group-hover:scale-x-125 transform duration-300" />
             </button>
          </div>

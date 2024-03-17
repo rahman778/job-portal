@@ -34,7 +34,7 @@
    }
 
    .input {
-      @apply py-3.5 px-4 text-sm text-gray-700 dark:text-gray-100 bg-slate-100 dark:bg-mediumGrey rounded-sm  w-full placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/90 focus:border-transparent;
+      @apply py-3.5 px-4 text-sm text-gray-700 dark:text-gray-100 bg-slate-50 dark:bg-mediumGrey rounded-sm  w-full placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/90 focus:border-transparent;
    }
 
    .link {

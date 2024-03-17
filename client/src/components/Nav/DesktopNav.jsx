@@ -11,7 +11,7 @@ const DesktopNav = (props) => {
       setIsOpen(true)
    }
    return (
-      <nav className="sticky bg-white dark:bg-darkGrey shadow-sm">
+      <nav className="sticky bg-white dark:bg-darkGrey shadow-sm dark:shadow-gray-800">
          <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
             <div className="flex justify-between h-16">
                <div className="flex items-center truncate w-full justify-between">

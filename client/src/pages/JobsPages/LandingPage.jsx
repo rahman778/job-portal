@@ -3,7 +3,7 @@ import JobCard from "../../components/Cards/JobCard";
 
 import heroImage from "../../assets/hero.jpg";
 
-const LandingPage = () => {
+function LandingPage() {
    return (
       <section>
          {/* Hero */}
@@ -58,6 +58,6 @@ const LandingPage = () => {
          </div>
       </section>
    );
-};
+}
 
 export default LandingPage;
