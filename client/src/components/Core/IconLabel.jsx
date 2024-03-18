@@ -1,7 +1,7 @@
-const IconLabel = ({ label, value }) => {
+const IconLabel = ({ label, value, children }) => {
    return (
       <div className="flex items-center space-x-4">
-         <slot></slot>
+         {children}
          <div>
             <div className="text-md">{label}</div>
             <div className="text-sm text-primary">{value}</div>

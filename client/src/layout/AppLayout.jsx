@@ -8,7 +8,7 @@ import JobDrawer from "../components/Drawers/JobDrawer";
 // import Checkbox from "../components/Forms/Checkbox";
 // import Dropdown from "../components/Forms/Dropdown";
 
-function Layout() {
+function AppLayout() {
    return (
       // <div>
       //    <Nav />
@@ -34,27 +34,12 @@ function Layout() {
       //          selectedItem={val}
       //          placeholder={"xzxzxz"}
       //          handleOptionClick={(val) => setval(val)}
-      //       />
-      //       <div className="mt-5">
-      //          <input type="text" name="" className="input" id="" />
-      //       </div>
-      //       <div className="mt-5">
-      //          <JobCard />
-      //       </div>
-      //       <div className="mt-5">
-      //          <JobViewFilter />
-      //       </div>
-      //       <div className="mt-5">
-      //          <JobFilter />
-      //       </div>
-      //    </div>
-      //    <JobDrawer />
       // </div>
       <>
          <Nav />
 
          <main>
-         {/* <main className="max-w-6xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12"> */}
+            {/* <main className="max-w-6xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12"> */}
             <Outlet />
          </main>
          <JobDrawer />
@@ -62,4 +47,4 @@ function Layout() {
    );
 }
 
-export default Layout;
+export default AppLayout;
