@@ -11,6 +11,9 @@ export default {
             secondary: "#ecc94b",
             darkGrey: "#181B21",
             mediumGrey: "#23272F",
+            lightGrey: "#F0F5F3",
+            darkGreen: "#244034",
+            ligherGreen: "#EEF2F0"
          },
          borderRadius: {
             'xs': '0.125rem',

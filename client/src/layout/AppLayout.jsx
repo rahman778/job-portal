@@ -10,31 +10,6 @@ import JobDrawer from "../components/Drawers/JobDrawer";
 
 function AppLayout() {
    return (
-      // <div>
-      //    <Nav />
-      //    <div className="px-5 mt-20">
-      //       <h2>Connecting Talent with Opportunity</h2>
-      //       <Checkbox label="I consent" />
-      //       <Dropdown
-      //          options={[
-      //             {
-      //                value: "unlimit",
-      //                label: "unlimit",
-      //             },
-      //             {
-      //                value: "2",
-      //                label: "option 2",
-      //             },
-      //             {
-      //                value: "3",
-      //                label: "option 3",
-      //             },
-      //          ]}
-      //          name={"time"}
-      //          selectedItem={val}
-      //          placeholder={"xzxzxz"}
-      //          handleOptionClick={(val) => setval(val)}
-      // </div>
       <>
          <Nav />
 

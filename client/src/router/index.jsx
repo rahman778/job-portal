@@ -6,6 +6,9 @@ import JobSearchPage from "../pages/JobsPages/JobSearchPage";
 import JobDetailsPage from "../pages/JobsPages/JobDetailsPage";
 import LoginPage from "../pages/AuthPages/LoginPage";
 import SignupPage from "../pages/AuthPages/SignupPage";
+import JobListingPage from "../pages/DashboardPages/JobListingPage";
+import JobCreatePage from "../pages/DashboardPages/JobCreatePage";
+import JobManagePage from "../pages/DashboardPages/JobManagePage";
 
 const router = createBrowserRouter([
    {
@@ -23,6 +26,18 @@ const router = createBrowserRouter([
          {
             path: "job/:jobId",
             element: <JobDetailsPage />,
+         },
+         {
+            path: "dashboard/",
+            element: <JobListingPage />,
+         },
+         {
+            path: "dashboard/job/create",
+            element: <JobCreatePage />,
+         },
+         {
+            path: "dashboard/job/manage",
+            element: <JobManagePage />,
          },
       ],
    },
