@@ -19,13 +19,14 @@ function LandingPage() {
                      Connecting Talent with{" "}
                      <span className="text-emerald-500">Opportunity</span>
                   </h1>
-                  {/* <p className="text-lg md:text-xl">Your subtext here</p> */}
+                  <p className="text-lg md:text-xl">Your subtext here</p>
                   <div className="max-w-3xl mx-auto mt-10">
                      <SearchFilter />
                   </div>
                </div>
             </div>
          </div>
+
          {/* Job List */}
          <div className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
             <div className="flex gap-x-3">

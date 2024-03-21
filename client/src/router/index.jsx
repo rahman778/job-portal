@@ -9,6 +9,8 @@ import SignupPage from "../pages/AuthPages/SignupPage";
 import JobListingPage from "../pages/DashboardPages/JobListingPage";
 import JobCreatePage from "../pages/DashboardPages/JobCreatePage";
 import JobManagePage from "../pages/DashboardPages/JobManagePage";
+import UserProfile from "../pages/ProfilePages/UserProfilePage";
+import CompanyProfile from "../pages/ProfilePages/CompanyProfilePage";
 
 const router = createBrowserRouter([
    {
@@ -28,16 +30,24 @@ const router = createBrowserRouter([
             element: <JobDetailsPage />,
          },
          {
-            path: "dashboard/",
+            path: "profile",
+            element: <UserProfile />,
+         },
+         {
+            path: "company/",
             element: <JobListingPage />,
          },
          {
-            path: "dashboard/job/create",
+            path: "company/job/create",
             element: <JobCreatePage />,
          },
          {
-            path: "dashboard/job/manage",
+            path: "company/job/manage",
             element: <JobManagePage />,
+         },
+         {
+            path: "company/profile",
+            element: <CompanyProfile  />,
          },
       ],
    },

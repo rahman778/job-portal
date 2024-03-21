@@ -7,9 +7,11 @@ import Tags from "../Core/Tags";
 import SaveButton from "../Buttons/SaveButton";
 import IconLabel from "../Core/IconLabel";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
+import JobApplyModal from "../Modals/JobApplyModal";
 
 const JobDrawer = () => {
    const [isOpen, setIsOpen] = useState(false);
+   const [openJobApplyModal, setOpenJobApplyModal] = useState(false);
 
    let [searchParams] = useSearchParams();
 
@@ -86,7 +88,10 @@ const JobDrawer = () => {
                      </div>
                   </div>
                   <div className="flex items-center space-x-3 mt-6">
-                     <button className="button primary-btn">
+                     <button
+                        className="button primary-btn"
+                        onClick={() => setOpenJobApplyModal(true)}
+                     >
                         Apply for job
                      </button>
                      <SaveButton size="w-7 h-7" />
@@ -94,6 +99,10 @@ const JobDrawer = () => {
                </div>
             </div>
          </div>
+         <JobApplyModal
+            open={openJobApplyModal}
+            setOpen={setOpenJobApplyModal}
+         />
       </Drawer>
    );
 };

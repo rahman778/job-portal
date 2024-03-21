@@ -21,7 +21,7 @@ function JobListingPage() {
                         </h3>
                         <div className="relative flex flex-wrap items-center my-2">
                            <button
-                              onClick={() => navigate("/dashboard/job/create")}
+                              onClick={() => navigate("/company/job/create")}
                               className="button secondary-btn flex items-center justify-center gap-x-2"
                            >
                               <span>Post a job</span>
@@ -76,7 +76,7 @@ function JobListingPage() {
                                        </button>
                                        <button
                                           onClick={() =>
-                                             navigate("/dashboard/job/manage")
+                                             navigate("/company/job/manage")
                                           }
                                           className="rounded-full w-8 h-8 flex items-center justify-center bg-emerald-600/10 hover-transition hover:bg-emerald-600/30"
                                        >

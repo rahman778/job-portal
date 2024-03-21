@@ -43,7 +43,7 @@ function JobCreatePage() {
                            options={[
                               { value: 1, label: "option 1" },
                               { value: 2, label: "option 2" },
-                              { value: 2, label: "option 2" },
+                              { value: 4, label: "option 4" },
                            ]}
                            name="currency"
                            label="currency"
@@ -60,7 +60,7 @@ function JobCreatePage() {
                            options={[
                               { value: 1, label: "option 1" },
                               { value: 2, label: "option 2" },
-                              { value: 2, label: "option 2" },
+                              { value: 3, label: "option 3" },
                            ]}
                            name="currency"
                            label="currency"
@@ -84,7 +84,6 @@ function JobCreatePage() {
                            <Dropdown
                               options={[
                                  { value: 1, label: "option 1" },
-                                 { value: 2, label: "option 2" },
                                  { value: 2, label: "option 2" },
                               ]}
                               name="currency"
