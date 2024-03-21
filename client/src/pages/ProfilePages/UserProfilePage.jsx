@@ -10,6 +10,7 @@ import {
 import BackButton from "../../components/Buttons/BackButton";
 import Avatar from "../../components/Core/Avatar";
 import UserProfileEditModal from "../../components/Modals/ProfileEditModal";
+import JobCard from "../../components/Cards/JobCard";
 
 function UserProfile() {
    const [profileModalOpen, setProfileModalOpen] = useState(false);
@@ -73,6 +74,12 @@ function UserProfile() {
     "
                   />
                </label>
+            </div>
+            <div className="bg-white dark:bg-mediumGrey border border-gray-300 dark:border-gray-700 rounded-md shadow-sm py-6 px-8 mt-5">
+                  <h2 className="text-lg font-medium mb-3">Saved Jobs</h2>
+                  <JobCard />
+                  <JobCard />
+                  <JobCard />
             </div>
          </div>
          <UserProfileEditModal
