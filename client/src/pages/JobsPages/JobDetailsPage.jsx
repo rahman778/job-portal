@@ -1,32 +1,12 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-
-import Drawer from "./Drawer";
-import JobHeader from "../Core/JobHeader";
-import Tags from "../Core/Tags";
-import SaveButton from "../Buttons/SaveButton";
-import IconLabel from "../Core/IconLabel";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
-import JobApplyModal from "../Modals/JobApplyModal";
+import IconLabel from "../../components/Core/IconLabel";
+import JobHeader from "../../components/Core/JobHeader";
+import Tags from "../../components/Core/Tags";
+import SaveButton from "../../components/Buttons/SaveButton";
 
-const JobDrawer = () => {
-   const [isOpen, setIsOpen] = useState(false);
-   const [openJobApplyModal, setOpenJobApplyModal] = useState(false);
-
-   let [searchParams] = useSearchParams();
-
-   let type = searchParams?.get("navType");
-
-   useEffect(() => {
-      if (type !== null) {
-         setIsOpen(true);
-      } else {
-         setIsOpen(false);
-      }
-   }, [type]);
-
+function JobDetailsPage() {
    return (
-      <Drawer isOpen={isOpen}>
+      <section className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
          <div className="grid lg:grid-cols-12 grid-cols-1 gap-8 mt-4">
             <div className="lg:col-span-8">
                <JobHeader />
@@ -88,10 +68,7 @@ const JobDrawer = () => {
                      </div>
                   </div>
                   <div className="flex items-center space-x-3 mt-6">
-                     <button
-                        className="button primary-btn"
-                        onClick={() => setOpenJobApplyModal(true)}
-                     >
+                     <button className="button primary-btn">
                         Apply for job
                      </button>
                      <SaveButton size="w-7 h-7" />
@@ -99,12 +76,8 @@ const JobDrawer = () => {
                </div>
             </div>
          </div>
-         <JobApplyModal
-            open={openJobApplyModal}
-            setOpen={setOpenJobApplyModal}
-         />
-      </Drawer>
+      </section>
    );
-};
+}
 
-export default JobDrawer;
+export default JobDetailsPage;

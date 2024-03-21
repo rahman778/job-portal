@@ -1,17 +1,20 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import ThemeButton from "../Buttons/ThemeButton";
+import Avatar from "../Core/Avatar";
 
 const DesktopNav = (props) => {
    const { routes, setIsOpen } = props;
 
+   const navigate = useNavigate();
+
    const user = {};
 
    const toggleMobileDrawer = () => {
-      setIsOpen(true)
-   }
+      setIsOpen(true);
+   };
    return (
-      <nav className="sticky bg-white dark:bg-darkGrey shadow-sm">
+      <nav className="sticky bg-white dark:bg-darkGrey shadow-sm dark:shadow-gray-800 z-10">
          <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
             <div className="flex justify-between h-16">
                <div className="flex items-center truncate w-full justify-between">
@@ -36,13 +39,20 @@ const DesktopNav = (props) => {
                <div className="flex items-center ">
                   <ThemeButton />
                   <div className="hidden lg:ml-2 lg:flex lg:items-center">
-                     {!user ? (
-                        <li
-                           className="button transparent-btn"
-                           //onClick={() => signOut({ callbackUrl: "/" })}
-                        >
-                           Logout
-                        </li>
+                     {user ? (
+                        <Avatar top={"top-[60px]"} right={"right-[30px]"}>
+                           <ul className="py-3  text-md min-w-28">
+                              <li
+                                 onClick={() => navigate("/profile")}
+                                 className="hover:bg-primary/20 dark:hover:bg-primary/20 px-4 py-1 cursor-pointer"
+                              >
+                                 Profile
+                              </li>
+                              <li className="button transparent-btn px-4 py-1 cursor-pointer">
+                                 Logout
+                              </li>
+                           </ul>
+                        </Avatar>
                      ) : (
                         <div className="flex items-center space-x-3 ">
                            <Link to="/login" className="button transparent-btn">

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import Avatar from "../Core/Avatar";
 
 const links = [
    {
@@ -30,7 +31,7 @@ const MobileNav = (props) => {
 
    return (
       <div
-         className={`p-2 absolute right-0 top-2 origin-top-right min-w-full transform transition-all duration-300 ease-in-out rounded z-50 overflow-auto ${
+         className={`p-2 absolute right-0 top-2 origin-top-right min-w-full transform transition-all duration-300 ease-in-out rounded z-50 ${
             isOpen
                ? "scale-100 opacity-100 visible"
                : "scale-90 opacity-0 invisible"
@@ -87,13 +88,17 @@ const MobileNav = (props) => {
                   ))}
                </div>
                <div>
-                  {!user ? (
-                     <li
-                        className="button light-btn w-full flex items-center justify-center px-4 py-3"
-                        // onClick={() => signOut({ callbackUrl: "/" })}
-                     >
-                        Logout
-                     </li>
+                  {user ? (
+                     <Avatar top={"-bottom-[65px]"}>
+                        <ul className="py-3  text-md min-w-28">
+                           <li className="hover:bg-primary/20 dark:hover:bg-primary/20 px-4 py-1 cursor-pointer">
+                              Profile
+                           </li>
+                           <li className="button transparent-btn px-4 py-1 cursor-pointer">
+                              Logout
+                           </li>
+                        </ul>
+                     </Avatar>
                   ) : (
                      <>
                         <Link

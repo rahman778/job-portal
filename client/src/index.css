@@ -14,7 +14,7 @@
    }
 
    .primary-btn {
-      @apply text-gray-100 bg-primary hover:bg-primary/90;
+      @apply text-gray-100 bg-primary hover:bg-primary/90 disabled:bg-gray-300 disabled:text-gray-500;
    }
 
    .primary-outline-btn {
@@ -22,7 +22,7 @@
    }
 
    .secondary-btn {
-      @apply text-slate-400 bg-[#ffffff0d] border border-gray-300 dark:border-gray-700 dark:hover:border-transparent hover:border-gray-200;
+      @apply text-gray-100 bg-amber-600 hover:bg-amber-600/90 disabled:bg-gray-300 disabled:text-gray-500;
    }
 
    .transparent-btn {
@@ -34,7 +34,7 @@
    }
 
    .input {
-      @apply py-3.5 px-4 text-sm text-gray-700 dark:text-gray-100 bg-slate-100 dark:bg-mediumGrey rounded-sm  w-full placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/90 focus:border-transparent;
+      @apply py-3.5 px-4 text-sm text-gray-700 dark:text-gray-100 bg-transparent dark:bg-transparent rounded-sm  w-full placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/90 focus:border-transparent;
    }
 
    .link {
@@ -50,4 +50,45 @@
    .hover-transition {
       @apply transform transition duration-300;
    }
+
+   .click-transition {
+      @apply transform transition duration-300 cursor-pointer active:scale-95;
+   }
+}
+
+@layer utilities {
+   .custom-scrollbar::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+   }
+
+   .custom-scrollbar::-webkit-scrollbar-track {
+      border-radius: 100vh;
+      background: #fafafa;
+   }
+
+   .dark .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgb(155, 155, 155);
+   }
+
+   .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #ced7d5;
+      border-radius: 100vh;
+   }
+
+   .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #4c5251;
+   }
+
+   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #d0e0dc;
+   }
+
+   .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #646a69;
+   }
+}
+
+.react-select__input:focus {
+   box-shadow: none;
 }
