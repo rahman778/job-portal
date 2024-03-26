@@ -2,23 +2,21 @@ require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 
+const keys = require('./config/keys');
+const routes = require('./routes');
 const connectDb = require('./config/db');
 
+const { port } = keys;
 const app = express();
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
+connectDb();
+require('./config/passport')(app);
+app.use(routes);
 
-app.get('/', (req, res) => {
-   res.send('Hello World!')
- })
-
- connectDb();
-
-const PORT = process.env.PORT || 4000;
-
-app.listen(PORT, () => {
-   console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+   console.log(`Server is running on port ${port}`);
 });
