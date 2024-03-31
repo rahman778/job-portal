@@ -13,6 +13,7 @@ const Recruiter = require("../../models/recruiter");
 const mailgun = require("../../services/mailgun");
 const keys = require("../../config/keys");
 const { EMAIL_PROVIDER, ROLES } = require("../../constants");
+const uploadImage = require("../../utils/storage");
 
 const { secret, tokenLife } = keys.jwt;
 
@@ -21,9 +22,7 @@ router.post("/login", async (req, res) => {
       const { email, password } = req.body;
 
       if (!email) {
-         return res
-            .status(400)
-            .json({ error: "You must enter an email address." });
+         return res.status(400).json({ error: "You must enter an email address." });
       }
 
       if (!password) {
@@ -78,35 +77,22 @@ router.post("/login", async (req, res) => {
    }
 });
 
-router.post("/register", async (req, res) => {
+router.post("/register", uploadImage.single("logo"), async (req, res) => {
    try {
-      const {
-         email,
-         firstName,
-         lastName,
-         password,
-         phoneNumber,
-         role,
-         companyName,
-         logo,
-      } = req.body;
+      const { email, firstName, lastName, password, phoneNumber, role, companyName } = req.body;
+
+      const logo = req.file;
 
       if (!email) {
-         return res
-            .status(400)
-            .json({ error: "You must enter an email address." });
+         return res.status(400).json({ error: "You must enter an email address." });
       }
 
       if (!firstName || !lastName) {
-         return res
-            .status(400)
-            .json({ error: "You must enter your full name." });
+         return res.status(400).json({ error: "You must enter your full name." });
       }
 
       if (!phoneNumber) {
-         return res
-            .status(400)
-            .json({ error: "You must enter your phone number." });
+         return res.status(400).json({ error: "You must enter your phone number." });
       }
 
       if (!password) {
@@ -114,29 +100,26 @@ router.post("/register", async (req, res) => {
       }
 
       if (role === ROLES.Recruiter && !companyName) {
-         return res
-            .status(400)
-            .json({ error: "You must enter a company name." });
+         return res.status(400).json({ error: "You must enter a company name." });
       }
 
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
-         return res
-            .status(400)
-            .json({ error: "Email address is already in use." });
+         return res.status(400).json({ error: "Email address is already in use." });
       }
-     
+
       let recruiterId = null;
 
-       // If the user's role is 'recruiter', create a new Recruiter document
+      // If the user's role is 'recruiter', create a new Recruiter document
       if (role === ROLES.Recruiter) {
          const recruiter = new Recruiter({
             companyName,
+            logo: logo.location,
          });
 
          const registeredRecruiter = await recruiter.save();
-         recruiterId = registeredRecruiter.id
+         recruiterId = registeredRecruiter.id;
       }
 
       const user = new User({
@@ -146,7 +129,7 @@ router.post("/register", async (req, res) => {
          lastName,
          phoneNumber,
          role,
-         recruiter: recruiterId
+         recruiter: recruiterId,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -159,12 +142,7 @@ router.post("/register", async (req, res) => {
          id: registeredUser.id,
       };
 
-      await mailgun.sendEmail(
-         registeredUser.email,
-         "signup",
-         null,
-         registeredUser
-      );
+      await mailgun.sendEmail(registeredUser.email, "signup", null, registeredUser);
 
       const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
 
@@ -191,17 +169,13 @@ router.post("/forgot-password", async (req, res) => {
       const { email } = req.body;
 
       if (!email) {
-         return res
-            .status(400)
-            .json({ error: "You must enter an email address." });
+         return res.status(400).json({ error: "You must enter an email address." });
       }
 
       const existingUser = await User.findOne({ email });
 
       if (!existingUser) {
-         return res
-            .status(400)
-            .send({ error: "No user found for this email address." });
+         return res.status(400).send({ error: "No user found for this email address." });
       }
 
       const buffer = crypto.randomBytes(48);
@@ -212,18 +186,12 @@ router.post("/forgot-password", async (req, res) => {
 
       existingUser.save();
 
-      await mailgun.sendEmail(
-         existingUser.email,
-         "reset",
-         req.headers.host,
-         resetToken
-      );
+      await mailgun.sendEmail(existingUser.email, "reset", req.headers.host, resetToken);
 
       res.status(200).json({
          success: true,
          resetToken,
-         message:
-            "Please check your email for the link to reset your password.",
+         message: "Please check your email for the link to reset your password.",
       });
    } catch (error) {
       res.status(400).json({
@@ -264,8 +232,7 @@ router.post("/reset-password/:token", async (req, res) => {
 
       res.status(200).json({
          success: true,
-         message:
-            "Password changed successfully. Please login with your new password.",
+         message: "Password changed successfully. Please login with your new password.",
       });
    } catch (error) {
       res.status(400).json({
@@ -289,17 +256,13 @@ router.post("/change-password", auth, async (req, res) => {
 
       const existingUser = await User.findOne({ email });
       if (!existingUser) {
-         return res
-            .status(400)
-            .json({ error: "Email address is already in use." });
+         return res.status(400).json({ error: "Email address is already in use." });
       }
 
       const isMatch = await bcrypt.compare(password, existingUser.password);
 
       if (!isMatch) {
-         return res
-            .status(400)
-            .json({ error: "Please enter your correct old password." });
+         return res.status(400).json({ error: "Please enter your correct old password." });
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -311,8 +274,7 @@ router.post("/change-password", auth, async (req, res) => {
 
       res.status(200).json({
          success: true,
-         message:
-            "Password changed successfully. Please login with your new password.",
+         message: "Password changed successfully. Please login with your new password.",
       });
    } catch (error) {
       res.status(400).json({
@@ -347,5 +309,15 @@ router.get(
       res.redirect(`${keys.app.clientURL}/auth/success?token=${jwtToken}`);
    }
 );
+
+// router.post("/upload", uploadImage.single("logo"), async (req, res) => {
+//    const imageUrl = req.file;
+
+//    console.log("imageUrl", imageUrl);
+
+//    return res.status(200).json({
+//       success: "Success",
+//    });
+// });
 
 module.exports = router;

@@ -37,6 +37,10 @@ const UserSchema = new Schema({
    googleId: {
       type: String
    },
+   resume: {
+      type: String,
+      default: null
+   },
    avatar: {
       type: String
    },
