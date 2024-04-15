@@ -8,6 +8,7 @@ const passport = require("passport");
 const auth = require("../../middleware/auth");
 
 const User = require("../../models/user");
+const Candidate = require("../../models/candidate");
 const Recruiter = require("../../models/recruiter");
 
 const mailgun = require("../../services/mailgun");
@@ -77,49 +78,25 @@ router.post("/login", async (req, res) => {
    }
 });
 
-router.post("/register", uploadImage.single("logo"), async (req, res) => {
+router.post("/register",  async (req, res) => {
    try {
-      const { email, firstName, lastName, password, phoneNumber, role, companyName } = req.body;
-
-      const logo = req.file;
-
-      if (!email) {
-         return res.status(400).json({ error: "You must enter an email address." });
-      }
-
-      if (!firstName || !lastName) {
-         return res.status(400).json({ error: "You must enter your full name." });
-      }
-
-      if (!phoneNumber) {
-         return res.status(400).json({ error: "You must enter your phone number." });
-      }
-
-      if (!password) {
-         return res.status(400).json({ error: "You must enter a password." });
-      }
-
-      if (role === ROLES.Recruiter && !companyName) {
-         return res.status(400).json({ error: "You must enter a company name." });
-      }
+      const {
+         email,
+         firstName,
+         lastName,
+         password,
+         phoneNumber,
+         role,
+         companyName,
+         education,
+         skills,
+         bio,
+      } = req.body;
 
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
          return res.status(400).json({ error: "Email address is already in use." });
-      }
-
-      let recruiterId = null;
-
-      // If the user's role is 'recruiter', create a new Recruiter document
-      if (role === ROLES.Recruiter) {
-         const recruiter = new Recruiter({
-            companyName,
-            logo: logo.location,
-         });
-
-         const registeredRecruiter = await recruiter.save();
-         recruiterId = registeredRecruiter.id;
       }
 
       const user = new User({
@@ -129,14 +106,33 @@ router.post("/register", uploadImage.single("logo"), async (req, res) => {
          lastName,
          phoneNumber,
          role,
-         recruiter: recruiterId,
       });
 
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(user.password, salt);
 
       user.password = hash;
+
       const registeredUser = await user.save();
+
+      if (role === ROLES.Recruiter) {
+         const recruiter = new Recruiter({
+            user: registeredUser.id,
+            // companyName,
+            // logo: logo.location,
+         });
+
+         await recruiter.save();
+      } else if (role === ROLES.Candidate) {
+         const candidate = new Candidate({
+            user: registeredUser.id,
+            // education: education,
+            // skills: skills,
+            // bio: bio,
+         });
+
+         await candidate.save();
+      }
 
       const payload = {
          id: registeredUser.id,
@@ -155,11 +151,13 @@ router.post("/register", uploadImage.single("logo"), async (req, res) => {
             lastName: registeredUser.lastName,
             email: registeredUser.email,
             role: registeredUser.role,
+            phoneNumber: registeredUser.phoneNumber
          },
       });
    } catch (error) {
+      console.log(error)
       res.status(400).json({
-         error: "Your request could not be processed. Please try again.",
+         error,
       });
    }
 });
