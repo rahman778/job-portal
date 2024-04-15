@@ -13,21 +13,20 @@ const UserSchema = new Schema({
       }
    },
    phoneNumber: {
-      type: String
+      type: String,
+      required: [true, "Mobile number field required!"],
    },
    firstName: {
-      type: String
+      type: String,
+      required: [true, "First name field required!"],
    },
    lastName: {
-      type: String
+      type: String,
+      required: [true, "Last name field required!"],
    },
    password: {
-      type: String
-   },
-   recruiter: {
-      type: Schema.Types.ObjectId,
-      ref: 'Recruiter',
-      default: null
+      type: String,
+      required: [true, "Password field required!"],
    },
    provider: {
       type: String,
@@ -35,13 +34,6 @@ const UserSchema = new Schema({
       default: EMAIL_PROVIDER.Email
    },
    googleId: {
-      type: String
-   },
-   resume: {
-      type: String,
-      default: null
-   },
-   avatar: {
       type: String
    },
    role: {
