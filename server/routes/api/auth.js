@@ -87,10 +87,6 @@ router.post("/register",  async (req, res) => {
          password,
          phoneNumber,
          role,
-         companyName,
-         education,
-         skills,
-         bio,
       } = req.body;
 
       const existingUser = await User.findOne({ email });
@@ -118,17 +114,12 @@ router.post("/register",  async (req, res) => {
       if (role === ROLES.Recruiter) {
          const recruiter = new Recruiter({
             user: registeredUser.id,
-            // companyName,
-            // logo: logo.location,
          });
 
          await recruiter.save();
       } else if (role === ROLES.Candidate) {
          const candidate = new Candidate({
             user: registeredUser.id,
-            // education: education,
-            // skills: skills,
-            // bio: bio,
          });
 
          await candidate.save();
@@ -155,7 +146,6 @@ router.post("/register",  async (req, res) => {
          },
       });
    } catch (error) {
-      console.log(error)
       res.status(400).json({
          error,
       });

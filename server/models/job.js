@@ -1,11 +1,14 @@
 const Mongoose = require("mongoose");
 
+const { JOB_TYPE, JOB_MODALITY } = require("../constants");
+
 const { Schema } = Mongoose;
 
 // Job Schema
 const JobSchema = new Schema({
-   userId: {
+   user: {
       type: Schema.Types.ObjectId,
+      ref: "Recruiter",
       required: true,
    },
    title: {
@@ -15,6 +18,14 @@ const JobSchema = new Schema({
    description: {
       type: String,
       required: true,
+   },
+   isActive: {
+      type: Boolean,
+      default: true,
+   },
+   isRemoved: {
+      type: Boolean,
+      default: false,
    },
    maxApplicants: {
       type: Number,
@@ -37,10 +48,14 @@ const JobSchema = new Schema({
    skillsets: [String],
    jobType: {
       type: String,
+      default: JOB_TYPE.Full_Time,
+      enum: [JOB_TYPE.Full_Time, JOB_TYPE.Part_Time, JOB_TYPE.Contract, JOB_TYPE.Internship],
       required: true,
    },
    modality: {
       type: String,
+      default: JOB_MODALITY.On_Site,
+      enum: [JOB_MODALITY.On_Site, JOB_MODALITY.Hybrid, JOB_MODALITY.Remote],
    },
    location: {
       type: String,
@@ -51,22 +66,14 @@ const JobSchema = new Schema({
    maxSalary: {
       type: Number,
    },
-   salaryFrequency: {
-      type: Number,
-   },
    salaryCurrency: {
-      type: Number,
+      type: String,
    },
-   tags: [
-      {
-         type: String,
-      },
-   ],
    updated: Date,
    created: {
       type: Date,
-      default: Date.now
-   }
+      default: Date.now,
+   },
 });
 
 module.exports = Mongoose.model("Job", JobSchema);
