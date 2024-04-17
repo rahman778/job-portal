@@ -57,6 +57,7 @@ router.get("/list", auth, role.check(ROLES.Admin), async (req, res) => {
       } else {
          users = await Recruiter.find()
             .sort("-created")
+            .populate("user", "-password")
             .limit(limit * 1)
             .skip((page - 1) * limit)
             .exec();
