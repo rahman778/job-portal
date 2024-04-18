@@ -7,7 +7,7 @@ const Candidate = require("../../models/candidate");
 
 const auth = require("../../middleware/auth");
 const role = require("../../middleware/role");
-const uploadImage = require("../../utils/storage");
+const upload = require("../../utils/storage");
 const { ROLES } = require("../../constants");
 
 // search users api
@@ -136,7 +136,7 @@ router.put("/", auth, async (req, res) => {
 router.put(
    "/profile",
    auth,
-   uploadImage.fields([
+   upload.fields([
       { name: "avatar", maxCount: 1 },
       { name: "logo", maxCount: 1 },
       { name: "resume", maxCount: 1 },

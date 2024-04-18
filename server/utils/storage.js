@@ -60,7 +60,7 @@ function sanitizeFile(file, cb) {
    }
 }
 
-const uploadImage = multer({
+const upload = multer({
    storage: s3Storage,
    fileFilter: (req, file, callback) => {
       sanitizeFile(file, callback);
@@ -70,4 +70,4 @@ const uploadImage = multer({
    },
 });
 
-module.exports = uploadImage;
+module.exports = upload;

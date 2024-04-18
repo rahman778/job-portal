@@ -14,7 +14,6 @@ const Recruiter = require("../../models/recruiter");
 const mailgun = require("../../services/mailgun");
 const keys = require("../../config/keys");
 const { EMAIL_PROVIDER, ROLES } = require("../../constants");
-const uploadImage = require("../../utils/storage");
 
 const { secret, tokenLife } = keys.jwt;
 
