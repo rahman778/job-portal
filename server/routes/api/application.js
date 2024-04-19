@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Job = require("../../models/job");
 const Application = require("../../models/application");
-const Recruiter = require("../../models/recruiter");
 const Candidate = require("../../models/candidate");
 
 const auth = require("../../middleware/auth");
@@ -18,10 +16,18 @@ router.get("/job/:jobId", auth, async (req, res) => {
    try {
       const job = req.params.jobId;
 
-      const application = await Application.find({ job }).sort("-created").populate({
-         path: "applicant",
-         model: "Candidate",
-      });
+      const application = await Application.find({ job })
+         .sort("-created")
+         .populate({
+            path: "applicant",
+            model: "Candidate",
+            select: "resume",
+            populate: {
+               path: "user",
+               model: "User",
+               select: "firstName lastName",
+            },
+         });
 
       res.status(200).json({
          data: application,
@@ -34,7 +40,7 @@ router.get("/job/:jobId", auth, async (req, res) => {
 });
 
 // fetch candidate applications api
-router.get("/applied", auth, async (req, res) => {
+router.get("/applied", auth, role.check(ROLES.Candidate), async (req, res) => {
    try {
       const user = req.user._id;
 
@@ -42,10 +48,17 @@ router.get("/applied", auth, async (req, res) => {
       const candidate = candidateDoc._id;
 
       const application = await Application.find({ applicant: candidate })
+         .select("status applicationDate")
          .sort("-created")
          .populate({
             path: "job",
             model: "Job",
+            select: "title ",
+            populate: {
+               path: "user",
+               model: "Recruiter",
+               select: "companyName logo",
+            },
          });
 
       res.status(200).json({
@@ -105,7 +118,7 @@ router.put("/:applicationId", auth, role.check(ROLES.Admin, ROLES.Recruiter), as
 
       const application = await Application.findOneAndUpdate(
          query,
-         { status },
+         { status, updated: Date.now() },
          {
             new: true,
          }
@@ -122,6 +135,5 @@ router.put("/:applicationId", auth, role.check(ROLES.Admin, ROLES.Recruiter), as
       });
    }
 });
-
 
 module.exports = router;

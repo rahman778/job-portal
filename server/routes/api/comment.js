@@ -58,7 +58,7 @@ router.put("/:id", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, r
 
       const updatedComment = await Comment.findOneAndUpdate(
          query,
-         { comment: update },
+         { comment: update, updated: Date.now() },
          {
             new: true,
          }

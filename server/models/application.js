@@ -1,5 +1,7 @@
 const Mongoose = require("mongoose");
 
+const { APPLICATION_STATUS } = require("../constants");
+
 const { Schema } = Mongoose;
 
 const ApplicationSchema = Schema({
@@ -15,8 +17,13 @@ const ApplicationSchema = Schema({
    },
    status: {
       type: String,
-      enum: ["Screening", "Interview", "Shortlisted", "Rejected"],
-      default: "Screening",
+      enum: [
+         APPLICATION_STATUS.Screening,
+         APPLICATION_STATUS.Interview,
+         APPLICATION_STATUS.Shortlisted,
+         APPLICATION_STATUS.Rejected,
+      ],
+      default: APPLICATION_STATUS.Screening,
    },
    applicationDate: {
       type: Date,

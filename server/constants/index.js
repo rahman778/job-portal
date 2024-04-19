@@ -10,6 +10,13 @@ exports.RECRUITER_STATUS = {
    Waiting_Approval: "Waiting Approval",
 };
 
+exports.APPLICATION_STATUS = {
+   Screening: "Screening",
+   Interview: "Interview",
+   Shortlisted: "Shortlisted",
+   Rejected: "Rejected",
+};
+
 exports.JOB_TYPE = {
    Full_Time: "Full-Time",
    Part_Time: "Part-Time",

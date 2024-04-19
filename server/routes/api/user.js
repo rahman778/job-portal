@@ -156,9 +156,13 @@ router.put(
                newUserData.resume = req.files["resume"][0].location;
             }
 
-            const candidateDoc = await Candidate.findOneAndUpdate(query, newUserData, {
-               new: true,
-            });
+            const candidateDoc = await Candidate.findOneAndUpdate(
+               query,
+               { ...newUserData, updated: Date.now() },
+               {
+                  new: true,
+               }
+            );
 
             res.status(200).json({
                success: true,
@@ -171,9 +175,13 @@ router.put(
                newUserData.logo = req.files["logo"][0].location;
             }
 
-            const recruiterDoc = await Recruiter.findOneAndUpdate(query, newUserData, {
-               new: true,
-            });
+            const recruiterDoc = await Recruiter.findOneAndUpdate(
+               query,
+               { ...newUserData, updated: Date.now() },
+               {
+                  new: true,
+               }
+            );
 
             res.status(200).json({
                success: true,
