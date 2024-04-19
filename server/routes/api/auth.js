@@ -77,22 +77,18 @@ router.post("/login", async (req, res) => {
    }
 });
 
-router.post("/register",  async (req, res) => {
+router.post("/register", async (req, res) => {
    try {
-      const {
-         email,
-         firstName,
-         lastName,
-         password,
-         phoneNumber,
-         role,
-      } = req.body;
+      const { email, firstName, lastName, password, phoneNumber, role, companyName } = req.body;
 
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
          return res.status(400).json({ error: "Email address is already in use." });
       }
+
+      const buffer = crypto.randomBytes(48);
+      const confirmationToken = buffer.toString("hex");
 
       const user = new User({
          email,
@@ -101,6 +97,7 @@ router.post("/register",  async (req, res) => {
          lastName,
          phoneNumber,
          role,
+         accountConfirmToken: confirmationToken,
       });
 
       const salt = await bcrypt.genSalt(10);
@@ -113,6 +110,7 @@ router.post("/register",  async (req, res) => {
       if (role === ROLES.Recruiter) {
          const recruiter = new Recruiter({
             user: registeredUser.id,
+            companyName,
          });
 
          await recruiter.save();
@@ -128,7 +126,7 @@ router.post("/register",  async (req, res) => {
          id: registeredUser.id,
       };
 
-      await mailgun.sendEmail(registeredUser.email, "signup", null, registeredUser);
+      await mailgun.sendEmail(registeredUser.email, "signup", req.headers.host, registeredUser);
 
       const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
 
@@ -141,12 +139,43 @@ router.post("/register",  async (req, res) => {
             lastName: registeredUser.lastName,
             email: registeredUser.email,
             role: registeredUser.role,
-            phoneNumber: registeredUser.phoneNumber
+            phoneNumber: registeredUser.phoneNumber,
          },
       });
    } catch (error) {
+      console.log("error", error);
       res.status(400).json({
          error,
+      });
+   }
+});
+
+router.post("/confirm-email/:token", async (req, res) => {
+   try {
+      const confirmUser = await User.findOne({
+         accountConfirmToken: req.params.token,
+      });
+
+      if (!confirmUser) {
+         return res.status(400).json({
+            error: "User not found.",
+         });
+      }
+
+      confirmUser.verified = true;
+      confirmUser.accountConfirmToken = undefined;
+
+      confirmUser.save();
+
+      await mailgun.sendEmail(confirmUser.email, "email-confirmation");
+
+      res.status(200).json({
+         success: true,
+         message: "Email confirmed",
+      });
+   } catch (error) {
+      res.status(400).json({
+         error: "Your request could not be processed. Please try again.",
       });
    }
 });

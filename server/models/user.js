@@ -1,6 +1,6 @@
-const Mongoose = require('mongoose');
+const Mongoose = require("mongoose");
 
-const { ROLES, EMAIL_PROVIDER } = require('../constants');
+const { ROLES, EMAIL_PROVIDER } = require("../constants");
 
 const { Schema } = Mongoose;
 
@@ -10,7 +10,7 @@ const UserSchema = new Schema({
       type: String,
       required: function () {
          return this.provider === EMAIL_PROVIDER.Email;
-      }
+      },
    },
    phoneNumber: {
       type: String,
@@ -31,23 +31,28 @@ const UserSchema = new Schema({
    provider: {
       type: String,
       required: true,
-      default: EMAIL_PROVIDER.Email
+      default: EMAIL_PROVIDER.Email,
    },
    googleId: {
-      type: String
+      type: String,
    },
    role: {
       type: String,
       default: ROLES.Recruiter,
-      enum: [ROLES.Admin, ROLES.Recruiter, ROLES.Candidate]
+      enum: [ROLES.Admin, ROLES.Recruiter, ROLES.Candidate],
    },
+   verified: {
+      type: Boolean,
+      default: false,
+   },
+   accountConfirmToken: { type: String },
    resetPasswordToken: { type: String },
    resetPasswordExpires: { type: Date },
    updated: Date,
    created: {
       type: Date,
-      default: Date.now
-   }
+      default: Date.now,
+   },
 });
 
-module.exports = Mongoose.model('User', UserSchema);
+module.exports = Mongoose.model("User", UserSchema);

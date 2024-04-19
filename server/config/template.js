@@ -12,6 +12,16 @@ exports.resetEmail = (host, resetToken) => {
   
     return message;
   };
+
+  exports.confirmEmail = () => {
+    const message = {
+      subject: 'Email Confirmed',
+      text:
+        `You account has been verified!. \n\n` 
+    };
+  
+    return message;
+  };
   
   exports.confirmResetPasswordEmail = () => {
     const message = {
@@ -24,20 +34,7 @@ exports.resetEmail = (host, resetToken) => {
     return message;
   };
   
-  exports.merchantSignup = (host, { resetToken, email }) => {
-    const message = {
-      subject: 'Merchant Registration',
-      text: `${
-        'Congratulations! Your application has been accepted. Please complete your Merchant account signup by clicking on the link below. \n\n' +
-        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-        'http://'
-      }${host}/merchant-signup/${resetToken}?email=${email}\n\n`
-    };
-  
-    return message;
-  };
-  
-  exports.merchantWelcome = name => {
+  exports.recruiterWelcome = name => {
     const message = {
       subject: 'Merchant Registration',
       text:
@@ -48,21 +45,13 @@ exports.resetEmail = (host, resetToken) => {
     return message;
   };
   
-  exports.signupEmail = name => {
+  exports.signupEmail =  (host, data) => {
     const message = {
       subject: 'Account Registration',
-      text: `Hi ${name.firstName} ${name.lastName}! Thank you for creating an account with us!.`
-    };
-  
-    return message;
-  };
-  
-  exports.newsletterSubscriptionEmail = () => {
-    const message = {
-      subject: 'Newsletter Subscription',
-      text:
-        `You are receiving this email because you subscribed to our newsletter. \n\n` +
-        `If you did not request this change, please contact us immediately.`
+      text: `Hi ${data.firstName} ${data.lastName}! Thank you for creating an account with us!.\n\n` +
+      'Please click on the following link, or paste this into your browser to confirm your email:\n\n' +
+      `http://${host}/confirm-email/${data.accountConfirmToken}\n\n` +
+      `If you did not register, please ignore this email.\n`
     };
   
     return message;
@@ -77,34 +66,4 @@ exports.resetEmail = (host, resetToken) => {
     return message;
   };
   
-  exports.merchantApplicationEmail = () => {
-    const message = {
-      subject: 'Sell on MERN Store',
-      text: `We received your request! Our team will contact you soon. \n\n`
-    };
-  
-    return message;
-  };
-  
-  exports.merchantDeactivateAccount = () => {
-    const message = {
-      subject: 'Merchant account on MERN Store',
-      text:
-        `Your merchant account has been disabled. \n\n` +
-        `Please contact admin to request access again.`
-    };
-  
-    return message;
-  };
-  
-  exports.orderConfirmationEmail = order => {
-    const message = {
-      subject: `Order Confirmation ${order._id}`,
-      text:
-        `Hi ${order.user.profile.firstName}! Thank you for your order!. \n\n` +
-        `We've received your order and will contact you as soon as your package is shipped. \n\n`
-    };
-  
-    return message;
-  };
   

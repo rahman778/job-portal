@@ -15,7 +15,7 @@ router.get("/list", async (req, res) => {
       const {
          max_salary,
          min_salary,
-         salary_currency = 'LKR',
+         salary_currency = "LKR",
          job_type,
          modality,
          search,
@@ -69,6 +69,52 @@ router.get("/list", async (req, res) => {
    } catch (error) {
       res.status(400).json({
          error,
+      });
+   }
+});
+
+//fetch job stats
+router.get("/stats", async (req, res) => {
+   try {
+      const jobTypes = await Job.aggregate([
+         {
+            $group: {
+               _id: "$jobType",
+               count: { $sum: 1 },
+            },
+         },
+         {
+            $project: {
+               label: "$_id",
+               count: 1,
+               _id: 0,
+            },
+         },
+      ]);
+
+      const modality = await Job.aggregate([
+         {
+            $group: {
+               _id: "$modality",
+               count: { $sum: 1 },
+            },
+         },
+         {
+            $project: {
+               label: "$_id",
+               count: 1,
+               _id: 0,
+            },
+         },
+      ]);
+
+      res.status(200).json({
+         jobTypes,
+         modality,
+      });
+   } catch (error) {
+      res.status(400).json({
+         error: "Your request could not be processed. Please try again.",
       });
    }
 });
@@ -136,51 +182,45 @@ router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, 
 });
 
 //update job
-router.put(
-   '/:id',
-   auth,
-   role.check(ROLES.Admin, ROLES.Recruiter),
-   async (req, res) => {
-     try {
-       const jobId = req.params.id;
-       const update = req.body.job;
-       const query = { _id: jobId };
- 
-       await Job.findOneAndUpdate(query, update, {
-         new: true
-       });
- 
-       res.status(200).json({
-         success: true,
-         message: 'Job has been updated successfully!'
-       });
-     } catch (error) {
-       res.status(400).json({
-         error: 'Your request could not be processed. Please try again.'
-       });
-     }
-   }
- );
+router.put("/:id", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, res) => {
+   try {
+      const jobId = req.params.id;
+      const update = req.body.job;
+      const query = { _id: jobId };
 
- //delete job
- router.delete(
-   '/delete/:id',
-   auth,
-   role.check(ROLES.Admin, ROLES.Recruiter),
-   async (req, res) => {
-     try {
-        await Job.findOneAndUpdate({ _id: req.params.id },{ isRemoved: true });
- 
-       res.status(200).json({
+      await Job.findOneAndUpdate(
+         query,
+         { ...update, updated: Date.now() },
+         {
+            new: true,
+         }
+      );
+
+      res.status(200).json({
+         success: true,
+         message: "Job has been updated successfully!",
+      });
+   } catch (error) {
+      res.status(400).json({
+         error: "Your request could not be processed. Please try again.",
+      });
+   }
+});
+
+//delete job
+router.delete("/delete/:id", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, res) => {
+   try {
+      await Job.findOneAndUpdate({ _id: req.params.id }, { isRemoved: true, updated: Date.now() });
+
+      res.status(200).json({
          success: true,
          message: `Job has been deleted successfully!`,
-       });
-     } catch (error) {
-       res.status(400).json({
-         error: 'Your request could not be processed. Please try again.'
-       });
-     }
+      });
+   } catch (error) {
+      res.status(400).json({
+         error: "Your request could not be processed. Please try again.",
+      });
    }
- );
+});
 
 module.exports = router;

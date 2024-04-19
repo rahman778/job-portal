@@ -5,7 +5,7 @@ const { Schema } = Mongoose;
 const CanidateSchema = Schema({
    user: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
    },
    education: [
@@ -37,7 +37,7 @@ const CanidateSchema = Schema({
       },
    ],
    skills: [String],
-   avatar: String,
+   avatar: { type: String },
    resume: {
       type: String,
    },

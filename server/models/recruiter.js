@@ -14,6 +14,7 @@ const RecruiterSchema = new Schema({
    companyName: {
       type: String,
       trim: true,
+      required: [true, "Company name is required!"],
    },
    logo: {
       type: String,
