@@ -1,6 +1,6 @@
 const Mongoose = require("mongoose");
 
-const { JOB_TYPE, JOB_MODALITY } = require("../constants");
+const { JOB_TYPE, JOB_MODALITY, EXPERIENCE } = require("../constants");
 
 const { Schema } = Mongoose;
 
@@ -23,6 +23,7 @@ const JobSchema = new Schema({
       type: Boolean,
       default: true,
    },
+   skillsets: [String],
    isRemoved: {
       type: Boolean,
       default: false,
@@ -38,14 +39,10 @@ const JobSchema = new Schema({
       type: Number,
       default: 0,
    },
-   dateOfPosting: {
-      type: Date,
-      default: Date.now,
+   experienceLevel: {
+      type: String,
+      enum: [EXPERIENCE.Beginner, EXPERIENCE.Intermediate, EXPERIENCE.Expert],
    },
-   deadline: {
-      type: Date,
-   },
-   skillsets: [String],
    jobType: {
       type: String,
       default: JOB_TYPE.Full_Time,
@@ -68,6 +65,9 @@ const JobSchema = new Schema({
    },
    salaryCurrency: {
       type: String,
+   },
+   deadline: {
+      type: Date,
    },
    updated: Date,
    created: {
