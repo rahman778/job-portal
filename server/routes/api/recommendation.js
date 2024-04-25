@@ -38,7 +38,6 @@ router.get("/candidates/:jobId", auth, async (req, res) => {
 
       res.status(200).json({ jobDoc, bestCandidateMatch: matchingCandidates });
    } catch (error) {
-      console.log("error", error);
       res.status(400).json({ error: "Your request could not be processed. Please try again." });
    }
 });
