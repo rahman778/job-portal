@@ -6,6 +6,7 @@ const jobRoutes = require("./job");
 const applicationRoutes = require("./application");
 const commentRoutes = require("./comment");
 const watchlistRoutes = require("./watchlist");
+const categoryRoutes = require("./category");
 const skillRoutes = require("./skill");
 const recommendationRoutes = require("./recommendation");
 
@@ -26,6 +27,9 @@ router.use("/comment", commentRoutes);
 
 // watchlist routes
 router.use("/watchlist", watchlistRoutes);
+
+// category routes
+router.use("/category", categoryRoutes);
 
 // skill routes
 router.use("/skill", skillRoutes);

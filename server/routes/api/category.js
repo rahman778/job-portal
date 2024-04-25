@@ -1,28 +1,28 @@
 const express = require("express");
 const router = express.Router();
 
-const Skill = require("../../models/skill");
+const Category = require("../../models/category");
 
 const auth = require("../../middleware/auth");
 const role = require("../../middleware/role");
 
 const { ROLES } = require("../../constants");
 
-//add skills api
+//add category api
 router.post("/add", auth, role.check(ROLES.Admin), async (req, res) => {
    try {
       const { name } = req.body;
 
-      const newSkill = new Skill({
+      const newCategory = new Category({
          name,
       });
 
-      const savedSkill = await newSkill.save();
+      const savedCategory = await newCategory.save();
 
       res.status(200).json({
          success: true,
-         message: `Skill has been added successfully!`,
-         skill: savedSkill,
+         message: `Category has been added successfully!`,
+         category: savedCategory,
       });
    } catch (e) {
       return res.status(400).json({
@@ -31,17 +31,13 @@ router.post("/add", auth, role.check(ROLES.Admin), async (req, res) => {
    }
 });
 
-// search skills api
-router.get("/autocomplete/:query", auth, async (req, res) => {
+// lise category api
+router.get("/list", async (req, res) => {
    try {
-      const query = req.params.query;
-
-      const skills = await Skill.find({
-         name: { $regex: new RegExp(query, "i") },
-      }).limit(10);
+      const category = await Category.find();
 
       res.status(200).json({
-         skills,
+         category,
       });
    } catch (error) {
       res.status(400).json({
