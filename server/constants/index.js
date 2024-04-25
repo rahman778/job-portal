@@ -1,3 +1,9 @@
+exports.SCORE_WEIGHTS = {
+   Skills_Match: 0.6,
+   SearchTerm_Match: 0.3,
+   Experience_Match: 0.1,
+};
+
 exports.ROLES = {
    Admin: "ROLE_ADMIN",
    Recruiter: "ROLE_RECRUITER",
@@ -28,6 +34,12 @@ exports.JOB_MODALITY = {
    Remote: "Remote",
    On_Site: "On-Site",
    Hybrid: "Hybrid",
+};
+
+exports.EXPERIENCE = {
+   Beginner: "Beginner",
+   Intermediate: "Intermediate",
+   Expert: "Expert",
 };
 
 exports.EMAIL_PROVIDER = {
