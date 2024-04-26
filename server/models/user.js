@@ -38,7 +38,7 @@ const UserSchema = new Schema({
    },
    role: {
       type: String,
-      default: ROLES.Recruiter,
+      default: ROLES.Candidate,
       enum: [ROLES.Admin, ROLES.Recruiter, ROLES.Candidate],
    },
    verified: {

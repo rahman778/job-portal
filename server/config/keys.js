@@ -9,8 +9,10 @@ module.exports = {
       url: process.env.MONGO_URI,
    },
    jwt: {
-      secret: process.env.JWT_SECRET,
-      tokenLife: "7d",
+      accessSecret: process.env.JWT_ACCESS_SECRET,
+      accessTokenLife: process.env.JWT_ACCESS_LIFE,
+      refreshSecret: process.env.JWT_REFRESH_SECRET,
+      refreshTokenLife: process.env.JWT_REFRESH_LIFE,
    },
    mailgun: {
       key: process.env.MAILGUN_KEY,

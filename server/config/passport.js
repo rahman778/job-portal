@@ -10,7 +10,7 @@ const { EMAIL_PROVIDER } = require("../constants");
 const { google } = keys;
 
 const User = mongoose.model("User");
-const secret = keys.jwt.secret;
+const secret = keys.jwt.accessSecret;
 
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
@@ -64,6 +64,7 @@ const googleAuth = async () => {
                         lastName: name[1],
                         avatar: profile.picture,
                         password: null,
+                        verified: true
                      });
 
                      newUser.save((err, user) => {

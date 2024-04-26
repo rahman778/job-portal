@@ -19,7 +19,7 @@ const JobCard = () => {
       navigate({
          pathname: location.pathname,
          search: `?${createSearchParams({
-            navType: "slider",
+            nav_type: "slider",
             jobId: 1234,
          })}`,
       });

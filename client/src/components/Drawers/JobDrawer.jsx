@@ -15,7 +15,7 @@ const JobDrawer = () => {
 
    let [searchParams] = useSearchParams();
 
-   let type = searchParams?.get("navType");
+   let type = searchParams?.get("nav_type");
 
    useEffect(() => {
       if (type !== null) {

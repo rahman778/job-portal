@@ -15,7 +15,7 @@ const mailgun = require("../../services/mailgun");
 const keys = require("../../config/keys");
 const { EMAIL_PROVIDER, ROLES } = require("../../constants");
 
-const { secret, tokenLife } = keys.jwt;
+const { accessSecret, accessTokenLife, refreshSecret, refreshTokenLife } = keys.jwt;
 
 router.post("/login", async (req, res) => {
    try {
@@ -53,15 +53,19 @@ router.post("/login", async (req, res) => {
          id: user.id,
       };
 
-      const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+      const accessToken = jwt.sign(payload, accessSecret, { expiresIn: accessTokenLife });
 
-      if (!token) {
+      if (!accessToken) {
          throw new Error();
       }
 
+      // Generate a refresh token
+      const refreshToken = jwt.sign(payload, refreshSecret, { expiresIn: refreshTokenLife });
+
       res.status(200).json({
          success: true,
-         token,
+         accessToken,
+         refreshToken,
          user: {
             id: user.id,
             firstName: user.firstName,
@@ -128,11 +132,15 @@ router.post("/register", async (req, res) => {
 
       await mailgun.sendEmail(registeredUser.email, "signup", req.headers.host, registeredUser);
 
-      const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+      const accessToken = jwt.sign(payload, accessSecret, { expiresIn: accessTokenLife });
+
+      // Generate a refresh token
+      const refreshToken = jwt.sign(payload, refreshSecret, { expiresIn: refreshTokenLife });
 
       res.status(200).json({
          success: true,
-         token,
+         accessToken,
+         refreshToken,
          user: {
             id: registeredUser.id,
             firstName: registeredUser.firstName,
@@ -146,6 +154,50 @@ router.post("/register", async (req, res) => {
       console.log("error", error);
       res.status(400).json({
          error,
+      });
+   }
+});
+
+router.post("/token/refresh", async (req, res) => {
+   try {
+      const refreshToken = req.body.refreshToken;
+      if (!refreshToken) {
+         return res.status(400).json({ error: "Refresh token is required." });
+      }
+
+      // Verify the refresh token
+      jwt.verify(refreshToken, refreshSecret, async (err, decoded) => {
+         if (err) {
+            return res.status(401).json({ error: "Invalid or expired refresh token." });
+         }
+
+         const user = await User.findById(decoded.id);
+
+         if (!user) {
+            return res.status(404).json({ error: "User not found." });
+         }
+
+         // Generate a new access token
+         const accessToken = jwt.sign({ id: user.id }, accessSecret, {
+            expiresIn: accessTokenLife,
+         });
+
+         res.status(200).json({
+            success: true,
+            accessToken,
+            refreshToken,
+            user: {
+               id: user.id,
+               firstName: user.firstName,
+               lastName: user.lastName,
+               email: user.email,
+               role: user.role,
+            },
+         });
+      });
+   } catch (error) {
+      res.status(400).json({
+         error: "Your request could not be processed. Please try again.",
       });
    }
 });
@@ -320,7 +372,7 @@ router.get(
          id: req.user.id,
       };
 
-      const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+      const token = jwt.sign(payload, accessSecret, { expiresIn: accessTokenLife });
       const jwtToken = `Bearer ${token}`;
       res.redirect(`${keys.app.clientURL}/auth/success?token=${jwtToken}`);
    }
