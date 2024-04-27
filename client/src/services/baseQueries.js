@@ -4,11 +4,12 @@ import { Mutex } from "async-mutex";
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../constants";
 
 export const publicBaseQuery = fetchBaseQuery({
-   baseUrl: process.env.REACT_APP_API_BASE,
+   baseUrl: import.meta.env.VITE_REACT_APP_API_BASE,
 });
 
+
 const baseQueryWithAuthHeaders = fetchBaseQuery({
-   baseUrl: process.env.REACT_APP_API_BASE,
+   baseUrl: import.meta.env.VITE_REACT_APP_API_BASE,
    prepareHeaders: (headers) => {
       // this method should retrieve the token without a hook
       const token = localStorage.getItem(ACCESS_TOKEN_NAME);

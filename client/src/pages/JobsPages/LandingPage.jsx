@@ -1,9 +1,14 @@
 import SearchFilter from "../../components/Filter/SearchFilter";
 import JobCard from "../../components/Cards/JobCard";
 
+import { useGetCategoriesQuery } from "../../services/categoryService";
+
 import heroImage from "../../assets/hero.jpg";
 
 function LandingPage() {
+   const { data: categories, isLoading: categoriesLoading } =
+      useGetCategoriesQuery();
+
    return (
       <section>
          {/* Hero */}
@@ -31,24 +36,17 @@ function LandingPage() {
          <div className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
             <div className="flex gap-x-3">
                <div className="hidden md:block divide-y w-1/4 border dark:border-slate-600 dark:divide-slate-600 rounded-md h-full sticky top-8 ">
-                  <div className="min-h-14 flex items-center justify-between text-md  px-3 hover-transition !border-l-transparent hover:!border-l-primary border-l-[3px] hover:bg-emerald-600/10 cursor-pointer">
-                     <span>IT/Software</span>
-                     <span className="bg-emerald-600/20 text-primary text-xs text-center py-0.5 font-semibold rounded-full h-6 w-8 leading-relaxed">
-                        10
-                     </span>
-                  </div>
-                  <div className="min-h-14 flex items-center px-3 hover-transition !border-l-transparent hover:!border-l-primary border-l-[3px] hover:bg-emerald-600/10 cursor-pointer">
-                     01
-                  </div>
-                  <div className="min-h-14 flex items-center px-3 hover-transition !border-l-transparent hover:!border-l-primary border-l-[3px] hover:bg-emerald-600/10 cursor-pointer">
-                     01
-                  </div>
-                  <div className="min-h-14 flex items-center px-3 hover-transition !border-l-transparent hover:!border-l-primary border-l-[3px] hover:bg-emerald-600/10 cursor-pointer">
-                     01
-                  </div>
-                  <div className="min-h-14 flex items-center px-3 hover-transition !border-l-transparent hover:!border-l-primary border-l-[3px] hover:bg-emerald-600/10 cursor-pointer">
-                     01
-                  </div>
+                  {categories?.data.map((category) => (
+                     <div
+                        key={category._id}
+                        className="min-h-14 flex items-center justify-between text-md  px-3 hover-transition !border-l-transparent hover:!border-l-primary border-l-[3px] hover:bg-emerald-600/10 cursor-pointer"
+                     >
+                        <span>{category.name}</span>
+                        <span className="bg-emerald-600/20 text-primary text-xs text-center py-0.5 font-semibold rounded-full h-6 w-8 leading-relaxed">
+                           {category.count}
+                        </span>
+                     </div>
+                  ))}
                </div>
                <div className="flex-1">
                   <JobCard />

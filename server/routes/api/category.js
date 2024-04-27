@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const Category = require("../../models/category");
+const Job = require("../../models/job");
 
 const auth = require("../../middleware/auth");
 const role = require("../../middleware/role");
@@ -31,13 +32,49 @@ router.post("/add", auth, role.check(ROLES.Admin), async (req, res) => {
    }
 });
 
-// lise category api
+// lise category api (with count)
 router.get("/list", async (req, res) => {
    try {
-      const category = await Category.find();
+      const category = await Job.aggregate([
+         {
+            $lookup: {
+               from: "categories",
+               localField: "category",
+               foreignField: "_id",
+               as: "categoryInfo",
+            },
+         },
+         {
+            $unwind: "$categoryInfo",
+         },
+         {
+            $group: {
+               _id: "$category",
+               count: { $sum: 1 },
+            },
+         },
+         {
+            $lookup: {
+               from: "categories",
+               localField: "_id",
+               foreignField: "_id",
+               as: "category",
+            },
+         },
+         {
+            $unwind: "$category",
+         },
+         {
+            $project: {
+               _id: "$category._id",
+               name: "$category.name",
+               count: "$count",
+            },
+         },
+      ]);
 
       res.status(200).json({
-         category,
+         data: category,
       });
    } catch (error) {
       res.status(400).json({

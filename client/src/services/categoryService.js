@@ -7,7 +7,7 @@ export const categoryAPI = createApi({
    endpoints: (build) => ({
       getCategories: build.query({
          query: () => ({
-            url: `/api/category`,
+            url: `/api/category/list`,
          }),
       }),
    }),

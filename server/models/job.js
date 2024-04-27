@@ -11,6 +11,11 @@ const JobSchema = new Schema({
       ref: "Recruiter",
       required: true,
    },
+   category: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+   },
    title: {
       type: String,
       required: true,
