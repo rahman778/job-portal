@@ -13,21 +13,28 @@ const { ROLES } = require("../../constants");
 router.get("/list", async (req, res) => {
    try {
       const {
+         sortOrder = {
+            created: -1,
+            //maxSalary: -1,
+         },
          max_salary,
          min_salary,
          salary_currency = "LKR",
          job_type,
          modality,
-         search,
+         query,
          page = 1,
          limit = 10,
       } = req.query;
 
-      let filterQuery = {};
+      let filterQuery = {
+         isActive: true,
+         isRemoved: false,
+      };
 
-      if (search) {
-         const searchRegex = new RegExp(search, "i");
-         filterQuery.$or = [{ title: searchRegex }, { skillsets: { $in: [searchRegex] } }];
+      if (query) {
+         const queryRegex = new RegExp(query, "i");
+         filterQuery.$or = [{ title: queryRegex }, { skillsets: { $in: [queryRegex] } }];
       }
 
       if (min_salary) {
@@ -48,25 +55,56 @@ router.get("/list", async (req, res) => {
          filterQuery.modality = modality;
       }
 
-      const jobs = await Job.find(filterQuery)
-         .sort("-created")
-         .populate({
-            path: "user",
-            model: "Recruiter",
-         })
-         .limit(limit * 1)
-         .skip((page - 1) * limit)
-         .exec();
+      const pipeline = [
+         { $match: filterQuery },
+         {
+            $lookup: {
+               from: "recruiters",
+               localField: "user",
+               foreignField: "_id",
+               as: "user",
+            },
+         },
+         { $unwind: "$user" },
+         {
+            $project: {
+               user: {
+                  user: 0,
+                  isActive: 0,
+               },
+            },
+         },
+      ];
+
+      // const jobs = await Job.find(filterQuery)
+      //    .sort("-created")
+      //    .populate({
+      //       path: "user",
+      //       model: "Recruiter",
+      //    })
+      //    .limit(limit * 1)
+      //    .skip((page - 1) * limit)
+      //    .exec();
+
+      const jobs = await Job.aggregate(pipeline);
 
       const count = jobs.length;
+      const size = count > limit ? page - 1 : 0;
+      const currentPage = count > limit ? Number(page) : 1;
+
+      // paginate query
+      const paginateQuery = [{ $sort: sortOrder }, { $skip: size * limit }, { $limit: limit * 1 }];
+
+      const results = await Job.aggregate(pipeline.concat(paginateQuery));
 
       res.status(200).json({
-         data: jobs,
+         data: results,
          totalPages: Math.ceil(count / limit),
-         currentPage: Number(page),
+         currentPage,
          count,
       });
    } catch (error) {
+      console.log("error", error);
       res.status(400).json({
          error,
       });

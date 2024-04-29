@@ -60,6 +60,7 @@
    .click-transition {
       @apply transform transition duration-300 cursor-pointer active:scale-95;
    }
+
 }
 
 @layer utilities {

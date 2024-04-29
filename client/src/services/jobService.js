@@ -1,17 +1,17 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { publicBaseQuery } from "./baseQueries";
 
-export const categoryAPI = createApi({
-   reducerPath: "categoryAPI",
+export const jobAPI = createApi({
+   reducerPath: "jobAPI",
    baseQuery: publicBaseQuery,
    endpoints: (build) => ({
-      getCategories: build.query({
-         query: () => ({
-            url: `/api/category/list`,
+      getJobs: build.query({
+         query: (filters) => ({
+            url: `/api/job/list?${filters}`,
          }),
          transformResponse: (response) => response.data,
       }),
    }),
 });
 
-export const { useGetCategoriesQuery } = categoryAPI;
+export const { useGetJobsQuery } = jobAPI;

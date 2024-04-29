@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { useDebounce } from "use-debounce";
 
 import {
    MagnifyingGlassIcon,
@@ -8,6 +9,7 @@ import {
    ArrowRightIcon,
    ClockIcon,
 } from "@heroicons/react/24/outline";
+import { useGetSkillsQuery } from "../../services/skillService";
 
 const SearchFilter = () => {
    const navigate = useNavigate();
@@ -16,9 +18,15 @@ const SearchFilter = () => {
    const [searchQuery, setSearchQuery] = useState("");
    const [showSearchSuggestion, setShowSearchSuggestion] = useState(false);
 
+   const [searchTerm] = useDebounce(searchQuery, 300);
+
+   const { data: skills } = useGetSkillsQuery(searchTerm, {
+      skip: searchTerm === "" || searchTerm.length < 3,
+   });
+
    const handleFormSubmit = () => {
       console.log("submit");
-      navigate("/search");
+      navigate("/jobs");
    };
 
    return (
@@ -40,25 +48,22 @@ const SearchFilter = () => {
                />
 
                <ul
-                  className={`absolute top-full w-full text-left z-20 bg-white dark:bg-mediumGrey max-h-56 rounded-md border border-gray-300 dark:border-gray-600 mt-0.5 ease-in-out-transition ${
-                     showSearchSuggestion
+                  className={`absolute top-full w-full text-left z-20 bg-white dark:bg-mediumGrey max-h-64 overflow-y-auto rounded-md border border-gray-300 dark:border-gray-600 mt-0.5 ease-in-out-transition ${
+                     showSearchSuggestion && skills?.length
                         ? "opacity-100 visible"
                         : "opacity-0 invisible"
                   }`}
                >
-                  <li
-                     onClick={() => setSearchQuery("title")}
-                     className="flex items-center space-x-2 text-sm font-medium hover:bg-primary/20 dark:hover:bg-primary/20 px-3 py-2 cursor-pointer"
-                  >
-                     <ClockIcon className="text-black dark:text-white h-4 w-4 stroke-2" />
-                     <span>adadad</span>
-                  </li>
-                  <li className="flex items-center space-x-3 text-sm font-medium hover:bg-primary/20 dark:hover:bg-primary/20 px-3 py-2">
-                     aasasasasaa
-                  </li>
-                  <li className="flex items-center space-x-3 text-sm font-medium hover:bg-primary/20 dark:hover:bg-primary/20 px-3 py-2">
-                     asasasas
-                  </li>
+                  {skills?.map((skill) => (
+                     <li
+                        key={skill._id}
+                        onClick={() => setSearchQuery("title")}
+                        className="flex items-center space-x-2 text-sm font-medium hover:bg-primary/20 dark:hover:bg-primary/20 px-3 py-2 cursor-pointer"
+                     >
+                        <ClockIcon className="text-black dark:text-white h-4 w-4 stroke-2" />
+                        <span>{skill.name}</span>
+                     </li>
+                  ))}
                </ul>
             </div>
             <div className="relative flex-1">
