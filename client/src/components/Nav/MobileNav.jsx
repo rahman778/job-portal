@@ -31,7 +31,7 @@ const MobileNav = (props) => {
 
    return (
       <div
-         className={`p-2 absolute right-0 top-2 origin-top-right min-w-full transform transition-all duration-300 ease-in-out rounded z-50 ${
+         className={`p-2 absolute right-0 top-2 origin-top-right min-w-full ease-in-out-transition rounded z-50 ${
             isOpen
                ? "scale-100 opacity-100 visible"
                : "scale-90 opacity-0 invisible"

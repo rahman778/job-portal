@@ -3,8 +3,6 @@ import JobCard from "../../components/Cards/JobCard";
 
 import { useGetCategoriesQuery } from "../../services/categoryService";
 
-import heroImage from "../../assets/hero.jpg";
-
 function LandingPage() {
    const { data: categories, isLoading: categoriesLoading } =
       useGetCategoriesQuery();
@@ -12,22 +10,17 @@ function LandingPage() {
    return (
       <section>
          {/* Hero */}
-         <div
-            className="relative bg-cover bg-center h-screen max-h-[55vh]"
-            style={{ backgroundImage: `url(${heroImage})` }}
-         >
-            <div className="absolute inset-0 bg-gray-900 opacity-70"></div>
-
-            <div className="absolute inset-0 flex justify-center items-center px-4 lg:px-8 xl:px-16">
-               <div className="text-center text-white">
-                  <h1 className="text-3xl md:text-5xl font-medium mb-4 tracking-wide">
-                     Connecting Talent with{" "}
-                     <span className="text-emerald-500">Opportunity</span>
-                  </h1>
-                  <p className="text-lg md:text-xl">Your subtext here</p>
-                  <div className="max-w-3xl mx-auto mt-10">
-                     <SearchFilter />
-                  </div>
+         <div className="relative bg-gradient-to-b from-[#D1FAE4] to-[#E7F4FB] dark:from-[#224331] dark:to-[#123442]">
+            <div className="text-center text-zinc-900 dark:text-zinc-300 px-4 lg:px-8 xl:px-16 py-10">
+               <h1 className="text-4xl md:text-5xl font-medium mb-4 tracking-wide">
+                  Unlock Your <span className="text-emerald-600">Dream</span>{" "}
+                  Career
+               </h1>
+               <p className="text-lg md:text-xl mt-6 text-gray-600 dark:text-gray-300">
+                  Find great job to build your career
+               </p>
+               <div className="max-w-3xl mx-auto mt-8">
+                  <SearchFilter />
                </div>
             </div>
          </div>

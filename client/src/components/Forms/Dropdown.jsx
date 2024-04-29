@@ -62,7 +62,7 @@ const Dropdown = (props) => {
          </div>
 
          <div
-            className={`absolute top-[55px] min-w-full bg-white dark:bg-mediumGrey max-h-56 rounded-md border border-gray-300 dark:border-gray-600 transform transition-all duration-300 ease-in-out shadow-md z-20 overflow-auto ${
+            className={`absolute top-[55px] min-w-full bg-white dark:bg-mediumGrey max-h-56 rounded-md border border-gray-300 dark:border-gray-600 ease-in-out-transition shadow-md z-20 overflow-auto ${
                isOpen ? "opacity-100 visible" : "opacity-0 invisible"
             }`}
          >
