@@ -5,13 +5,11 @@ function RecentJobsPage() {
 
    const { data: jobs } = useGetJobsQuery();
 
-   console.log('jobs', jobs)
-
    return (
       <>
-         {jobs?.map((job) => (
+         {jobs?.data.map((job) => (
             <div key={job._id}>
-               <JobCard />
+               <JobCard data={job}/>
             </div>
          ))}
       </>

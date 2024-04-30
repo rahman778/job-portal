@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { useDebounce } from "use-debounce";
 
@@ -8,14 +8,16 @@ import {
    MapPinIcon,
    ArrowRightIcon,
    ClockIcon,
+   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useGetSkillsQuery } from "../../services/skillService";
 
-const SearchFilter = () => {
+const SearchFilter = ({ placeValue = "", searchValue }) => {
    const navigate = useNavigate();
+   const [searchParams] = useSearchParams();
 
-   const [placeQuery, setPlaceQuery] = useState(null);
-   const [searchQuery, setSearchQuery] = useState("");
+   const [placeQuery, setPlaceQuery] = useState("");
+   const [searchQuery, setSearchQuery] = useState(searchValue || "");
    const [showSearchSuggestion, setShowSearchSuggestion] = useState(false);
 
    const [searchTerm] = useDebounce(searchQuery, 300);
@@ -24,9 +26,34 @@ const SearchFilter = () => {
       skip: searchTerm === "" || searchTerm.length < 3,
    });
 
-   const handleFormSubmit = () => {
-      console.log("submit");
-      navigate("/jobs");
+   const handleFormSubmit = (e) => {
+      e.preventDefault();
+
+      if (searchQuery !== "") {
+         searchParams.set("query", searchQuery);
+      } else {
+         searchParams.delete("query");
+      }
+
+      if (placeQuery !== "") {
+         searchParams.set("location", placeQuery);
+      } else {
+         searchParams.delete("location");
+      }
+
+      navigate({
+         pathname: "/jobs",
+         search: searchParams.toString(),
+      });
+   };
+
+   const handleQueryReset = () => {
+      setSearchQuery("");
+      searchParams.delete("query");
+      navigate({
+         pathname: "/jobs",
+         search: searchParams.toString(),
+      });
    };
 
    return (
@@ -37,7 +64,7 @@ const SearchFilter = () => {
                   <MagnifyingGlassIcon className="text-amber-500 h-5 w-5" />
                </span>
                <input
-                  className="w-full text-black dark:text-white text-md py-4 pl-12 pr-4 bg-white dark:bg-gray-900 border-0 rounded-r-[30px] sm:rounded-r-[0px] rounded-l-[30px] border-r border-gray-200 dark:border-gray-800 focus:ring-0 focus:border-inherit"
+                  className="w-full text-black dark:text-white text-md py-4 pl-12 pr-6 bg-white dark:bg-gray-900 border-0 rounded-r-[30px] sm:rounded-r-[0px] rounded-l-[30px] border-r border-gray-200 dark:border-gray-800 focus:ring-0 focus:border-inherit"
                   type="text"
                   value={searchQuery}
                   placeholder="Job tilte or keywords"
@@ -46,6 +73,14 @@ const SearchFilter = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   maxLength={200}
                />
+               {searchQuery.length > 0 && (
+                  <span
+                     className="absolute inset-y-0 right-1.5 flex items-center"
+                     onClick={handleQueryReset}
+                  >
+                     <XMarkIcon className="text-stone-300 h-4 w-4 stroke-[3] hover:text-stone-400" />
+                  </span>
+               )}
 
                <ul
                   className={`absolute top-full w-full text-left z-20 bg-white dark:bg-mediumGrey max-h-64 overflow-y-auto rounded-md border border-gray-300 dark:border-gray-600 mt-0.5 ease-in-out-transition ${
@@ -57,7 +92,7 @@ const SearchFilter = () => {
                   {skills?.map((skill) => (
                      <li
                         key={skill._id}
-                        onClick={() => setSearchQuery("title")}
+                        onClick={() => setSearchQuery(skill.name)}
                         className="flex items-center space-x-2 text-sm font-medium hover:bg-primary/20 dark:hover:bg-primary/20 px-3 py-2 cursor-pointer"
                      >
                         <ClockIcon className="text-black dark:text-white h-4 w-4 stroke-2" />
@@ -72,11 +107,12 @@ const SearchFilter = () => {
                </span>
 
                <GooglePlacesAutocomplete
-                  apiKey={import.meta.env.VITE_REACT_APP_API_BASE}
+                  apiKey={import.meta.env.VITE_GOOGLE_API_KEY}
                   minLengthAutocomplete={2}
                   selectProps={{
                      placeQuery,
                      onChange: setPlaceQuery,
+                     defaultInputValue: `${placeValue}`,
                      placeholder: "Search places",
                      classNames: {
                         control: () =>

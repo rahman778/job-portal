@@ -48,11 +48,13 @@ router.get("/list", async (req, res) => {
       }
 
       if (job_type) {
-         filterQuery.jobType = job_type;
+         const jobTypes = job_type.split(",");
+         filterQuery.jobType = { $in: jobTypes };
       }
 
       if (modality) {
-         filterQuery.modality = modality;
+         const moadalityTypes = modality.split(",");
+         filterQuery.modality = { $in: moadalityTypes };
       }
 
       const pipeline = [
@@ -115,6 +117,7 @@ router.get("/list", async (req, res) => {
 router.get("/stats", async (req, res) => {
    try {
       const jobTypes = await Job.aggregate([
+         { $match: { isActive: true, isRemoved: false } },
          {
             $group: {
                _id: "$jobType",
@@ -131,6 +134,7 @@ router.get("/stats", async (req, res) => {
       ]);
 
       const modality = await Job.aggregate([
+         { $match: { isActive: true, isRemoved: false } },
          {
             $group: {
                _id: "$modality",
@@ -147,8 +151,7 @@ router.get("/stats", async (req, res) => {
       ]);
 
       res.status(200).json({
-         jobTypes,
-         modality,
+         data: { jobTypes, modality },
       });
    } catch (error) {
       res.status(400).json({

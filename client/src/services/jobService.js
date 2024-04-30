@@ -7,11 +7,16 @@ export const jobAPI = createApi({
    endpoints: (build) => ({
       getJobs: build.query({
          query: (filters) => ({
-            url: `/api/job/list?${filters}`,
+            url: `/api/job/list`,
+            params:filters
          }),
-         transformResponse: (response) => response.data,
+      }),
+      getJobStats: build.query({
+         query: () => ({
+            url: `/api/job/stats`,
+         }),
       }),
    }),
 });
 
-export const { useGetJobsQuery } = jobAPI;
+export const { useGetJobsQuery, useGetJobStatsQuery } = jobAPI;

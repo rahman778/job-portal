@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const Dropdown = (props) => {
-   const { options, handleOptionClick, name, placeholder, selectedItem } =
+   const { options, handleOptionClick, name, placeholder, selectedItem, className } =
       props;
 
    const dropdownRef = useRef(null);
@@ -46,7 +46,7 @@ const Dropdown = (props) => {
       >
          <input
             type="text"
-            className="input cursor-default"
+            className={`input cursor-default ${className}`}
             onClick={toggleDropdown}
             placeholder={placeholder}
             value={value}

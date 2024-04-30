@@ -1,22 +1,50 @@
+import { useGetJobStatsQuery } from "../../services/jobService";
+
 import FilterLabel from "./FilterLabel";
 import Checkbox from "../Forms/Checkbox";
 import Dropdown from "../Forms/Dropdown";
 import RangeSlider from "../Core/RangeSlider";
 
-const JobFilter = () => {
+const JobFilter = (props) => {
+   const { handleJobTypeChange, handleModalityChange, jobTypes,modalities } = props;
+
+   const { data: stats } = useGetJobStatsQuery();
+
    return (
       <div className="shadow dark:shadow-gray-700 p-6 rounded-md bg-white dark:bg-mediumGrey">
          <div className="grid grid-cols-1 gap-y-6">
             <FilterLabel label="Job Types">
-               <Checkbox value="Mike" label="Full Time" quantity="15" />
-               <Checkbox value="Mike" label="Part Time" quantity="9" />
-               <Checkbox value="Mike" label="Contract" />
+               {stats?.data?.jobTypes.map((jobType) => (
+                  <div key={jobType.label}>
+                     <Checkbox
+                        value={jobType.label}
+                        label={jobType.label}
+                        quantity={jobType.count}
+                        name={jobType.label}
+                        checked={jobTypes?.includes(jobType.label)}
+                        onChange={(e) =>
+                           handleJobTypeChange("job_type", e.target.value)
+                        }
+                     />
+                  </div>
+               ))}
             </FilterLabel>
 
             <FilterLabel label="Modality">
-               <Checkbox value="Mike" label="Onsite" quantity="15" />
-               <Checkbox value="Mike" label="Hyrid" quantity="9" />
-               <Checkbox value="Mike" label="Remote" />
+               {stats?.data?.modality.map((modality) => (
+                  <div key={modality.label}>
+                     <Checkbox
+                        value={modality.label}
+                        label={modality.label}
+                        quantity={modality.count}
+                        name={modality.label}
+                        checked={modalities?.includes(modality.label)}
+                        onChange={(e) =>
+                           handleModalityChange("modality", e.target.value)
+                        }
+                     />
+                  </div>
+               ))}
             </FilterLabel>
 
             <FilterLabel label="Salary">
@@ -26,11 +54,12 @@ const JobFilter = () => {
                      options={[
                         { value: 1, label: "option 1" },
                         { value: 2, label: "option 2" },
-                        { value: 2, label: "option 2" },
+                        { value: 3, label: "option 2" },
                      ]}
                      name="currency"
                      label="currency"
                      placeholder="Currency"
+                     className="py-2.5"
                   />
                   <RangeSlider />
                </div>

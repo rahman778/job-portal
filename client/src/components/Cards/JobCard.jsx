@@ -11,7 +11,7 @@ import {
    MapPinIcon,
 } from "@heroicons/react/24/outline";
 
-const JobCard = () => {
+const JobCard = ({data}) => {
    const navigate = useNavigate();
    const location = useLocation();
 
@@ -26,7 +26,7 @@ const JobCard = () => {
    };
    return (
       <div
-         className="w-full bg-white dark:bg-mediumGrey px-5 py-6 border dark:border-slate-600 hover:border-primary dark:hover:border-primary rounded-md hover:bg-primary/5 dark:hover:bg-primary/5 hover-transition cursor-pointer"
+         className="w-full bg-white dark:bg-mediumGrey px-6 py-6 border dark:border-slate-600 hover:border-primary dark:hover:border-primary rounded-md hover:bg-primary/5 dark:hover:bg-primary/5 hover-transition cursor-pointer"
          onClick={openModal}
       >
          <div className="flex justify-between items-center">
@@ -38,8 +38,8 @@ const JobCard = () => {
                   height="45"
                />
                <div className="text-stone-800 dark:text-stone-200">
-                  <div className="text-base font-medium  hover:text-primary hover:underline">
-                     Frontend Engineer
+                  <div className="text-base font-medium capitalize  hover:text-primary hover:underline">
+                     {data.title}
                   </div>
                   <div className="text-sm">Virtusa</div>
                </div>
@@ -48,7 +48,7 @@ const JobCard = () => {
             <SaveButton className="w-8 h-8" />
          </div>
 
-         <div className="flex flex-wrap gap-x-3 items-center mt-5 mb-2">
+         <div className="flex flex-wrap gap-x-3 items-center mt-3 mb-2">
             <IconText>
                <BriefcaseIcon className="text-slate-500 dark:text-slate-300  h-8 w-4" />
                <span className="font-medium">Full-Time</span>
