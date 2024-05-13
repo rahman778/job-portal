@@ -1,12 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Nav from "../components/Nav/Nav";
 import JobDrawer from "../components/Drawers/JobDrawer";
-// import JobCard from "../components/Cards/JobCard";
 
-// import JobFilter from "../components/Filter/JobFilter";
-// import JobViewFilter from "../components/Filter/JobViewFilter";
-// import Checkbox from "../components/Forms/Checkbox";
-// import Dropdown from "../components/Forms/Dropdown";
 
 function AppLayout() {
    return (

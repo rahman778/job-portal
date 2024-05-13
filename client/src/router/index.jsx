@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 
 import AppLayout from "../layout/AppLayout";
-import LandingPage from "../pages/JobsPages/LandingPage";
+import RecentJobsPage from "../pages/JobsPages/RecentJobsPage.jsx";
 import JobSearchPage from "../pages/JobsPages/JobSearchPage";
 import JobDetailsPage from "../pages/JobsPages/JobDetailsPage";
 import LoginPage from "../pages/AuthPages/LoginPage";
@@ -11,6 +11,9 @@ import JobCreatePage from "../pages/DashboardPages/JobCreatePage";
 import JobManagePage from "../pages/DashboardPages/JobManagePage";
 import UserProfile from "../pages/ProfilePages/UserProfilePage";
 import CompanyProfile from "../pages/ProfilePages/CompanyProfilePage";
+import JobsLayout from "../layout/JobsLayout";
+import SuggestedJobsPage from "../pages/JobsPages/SuggestedJobsPage.jsx";
+import SavedJobsPage from "../pages/JobsPages/SavedJobsPage.jsx";
 
 const router = createBrowserRouter([
    {
@@ -19,10 +22,24 @@ const router = createBrowserRouter([
       children: [
          {
             path: "",
-            element: <LandingPage />,
+            element: <JobsLayout />,
+            children: [
+               {
+                  path: "recent-jobs",
+                  element: <RecentJobsPage />,
+               },
+               {
+                  path: "suggested-jobs",
+                  element: <SuggestedJobsPage />,
+               },
+               {
+                  path: "saved-jobs",
+                  element: <SavedJobsPage />,
+               },
+            ],
          },
          {
-            path: "search",
+            path: "jobs",
             element: <JobSearchPage />,
          },
          {
@@ -47,7 +64,7 @@ const router = createBrowserRouter([
          },
          {
             path: "company/profile",
-            element: <CompanyProfile  />,
+            element: <CompanyProfile />,
          },
       ],
    },

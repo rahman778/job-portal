@@ -53,7 +53,7 @@ const Avatar = ({ children, top, right, size = "w-10 h-10" }) => {
 
          {children && (
             <div
-               className={`absolute ${top} ${right} bg-white dark:bg-mediumGrey max-h-56 rounded-md border border-gray-300 dark:border-gray-600 transform transition-all duration-300 ease-in-out shadow-md ${
+               className={`absolute ${top} ${right} bg-white dark:bg-mediumGrey max-h-56 rounded-md border border-gray-300 dark:border-gray-600 ease-in-out-transition shadow-md ${
                   isOpen ? "opacity-100 visible" : "opacity-0 invisible"
                }`}
                onClick={() => setIsOpen(false)}

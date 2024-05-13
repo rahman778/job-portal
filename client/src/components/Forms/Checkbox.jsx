@@ -1,5 +1,5 @@
 const Checkbox = (props) => {
-   const { checked, label, name, onchange, quantity, labelClass = "text-md" } = props;
+   const { checked, label, name, value, onChange, quantity, labelClass = "text-md" } = props;
    return (
       <div className="flex justify-between">
          <div className="w-full flex items-center gap-x-3">
@@ -7,8 +7,9 @@ const Checkbox = (props) => {
                type="checkbox"
                name={name}
                id={name}
-               onChange={onchange}
+               onChange={(e)=>onChange(e)}
                checked={checked}
+               value={value}
                className="bg-slate-100 dark:bg-mediumGrey text-primary h-4 w-4 border-1 rounded-xs focus:outline-none focus:ring-offset-0 focus:border-primary focus:ring-1 focus:ring-primary/90 dark:checked:bg-primary checked:bg-priborder-primary focus:border-transparent"
             />
             <label className={labelClass} htmlFor={name}>

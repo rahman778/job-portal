@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { ObjectId } = require("mongodb");
 
 const Job = require("../../models/job");
 const Recruiter = require("../../models/recruiter");
@@ -13,21 +14,40 @@ const { ROLES } = require("../../constants");
 router.get("/list", async (req, res) => {
    try {
       const {
+         sort,
          max_salary,
          min_salary,
+         category,
          salary_currency = "LKR",
          job_type,
          modality,
-         search,
+         query,
+         experience_level,
+         date_posted,
          page = 1,
          limit = 10,
       } = req.query;
 
-      let filterQuery = {};
+      let filterQuery = {
+         isActive: true,
+         isRemoved: false,
+      };
 
-      if (search) {
-         const searchRegex = new RegExp(search, "i");
-         filterQuery.$or = [{ title: searchRegex }, { skillsets: { $in: [searchRegex] } }];
+      let sortOrder = {};
+
+      if (sort === "salary") {
+         sortOrder = {
+            maxSalary: -1,
+         };
+      } else {
+         sortOrder = {
+            created: -1,
+         };
+      }
+
+      if (query) {
+         const queryRegex = new RegExp(query, "i");
+         filterQuery.$or = [{ title: queryRegex }, { skillsets: { $in: [queryRegex] } }];
       }
 
       if (min_salary) {
@@ -40,33 +60,82 @@ router.get("/list", async (req, res) => {
          filterQuery.salaryCurrency = salary_currency;
       }
 
+      if (category) {
+         var catId = new ObjectId(category);
+         filterQuery.category = catId;
+      }
+
       if (job_type) {
-         filterQuery.jobType = job_type;
+         const jobTypes = job_type.split(",");
+         filterQuery.jobType = { $in: jobTypes };
       }
 
       if (modality) {
-         filterQuery.modality = modality;
+         const moadalityTypes = modality.split(",");
+         filterQuery.modality = { $in: moadalityTypes };
       }
 
-      const jobs = await Job.find(filterQuery)
-         .sort("-created")
-         .populate({
-            path: "user",
-            model: "Recruiter",
-         })
-         .limit(limit * 1)
-         .skip((page - 1) * limit)
-         .exec();
+      if (experience_level) {
+         const experienceTypes = experience_level.split(",");
+         filterQuery.experienceLevel = { $in: experienceTypes };
+      }
+
+      if (date_posted && date_posted !== "anytime") {
+         filterQuery.created = { $gte: new Date(Date.now() - date_posted * 24 * 60 * 60 * 1000) };
+      }
+
+      const pipeline = [
+         { $match: filterQuery },
+         {
+            $lookup: {
+               from: "recruiters",
+               localField: "user",
+               foreignField: "_id",
+               as: "user",
+            },
+         },
+         { $unwind: "$user" },
+         {
+            $project: {
+               user: {
+                  user: 0,
+                  isActive: 0,
+               },
+            },
+         },
+      ];
+
+      // const jobs = await Job.find(filterQuery)
+      //    .sort("-created")
+      //    .populate({
+      //       path: "user",
+      //       model: "Recruiter",
+      //    })
+      //    .limit(limit * 1)
+      //    .skip((page - 1) * limit)
+      //    .exec();
+
+      const jobs = await Job.aggregate(pipeline);
 
       const count = jobs.length;
+      const size = count > limit ? page - 1 : 0;
+      const currentPage = count > limit ? Number(page) : 1;
+
+      // paginate query
+      const paginateQuery = [{ $sort: sortOrder }, { $skip: size * limit }, { $limit: limit * 1 }];
+
+      const results = await Job.aggregate(pipeline.concat(paginateQuery));
 
       res.status(200).json({
-         data: jobs,
-         totalPages: Math.ceil(count / limit),
-         currentPage: Number(page),
-         count,
+         data: results,
+         meta: {
+            totalPages: Math.ceil(count / limit),
+            currentPage,
+            count,
+         },
       });
    } catch (error) {
+      console.log("error", error);
       res.status(400).json({
          error,
       });
@@ -75,8 +144,23 @@ router.get("/list", async (req, res) => {
 
 //fetch job stats
 router.get("/stats", async (req, res) => {
+   const filterQuery = {};
+
+   const { query, category } = req.query;
+
+   if (query) {
+      const queryRegex = new RegExp(query, "i");
+      filterQuery.$or = [{ title: queryRegex }, { skillsets: { $in: [queryRegex] } }];
+   }
+
+   if (category) {
+      var catId = new ObjectId(category);
+      filterQuery.category = catId;
+   }
+
    try {
       const jobTypes = await Job.aggregate([
+         { $match: { isActive: true, isRemoved: false, ...filterQuery } },
          {
             $group: {
                _id: "$jobType",
@@ -93,6 +177,7 @@ router.get("/stats", async (req, res) => {
       ]);
 
       const modality = await Job.aggregate([
+         { $match: { isActive: true, isRemoved: false, ...filterQuery } },
          {
             $group: {
                _id: "$modality",
@@ -108,9 +193,25 @@ router.get("/stats", async (req, res) => {
          },
       ]);
 
+      const experienceLevel = await Job.aggregate([
+         { $match: { isActive: true, isRemoved: false, ...filterQuery } },
+         {
+            $group: {
+               _id: "$experienceLevel",
+               count: { $sum: 1 },
+            },
+         },
+         {
+            $project: {
+               label: "$_id",
+               count: 1,
+               _id: 0,
+            },
+         },
+      ]);
+
       res.status(200).json({
-         jobTypes,
-         modality,
+         data: { jobTypes, modality, experienceLevel },
       });
    } catch (error) {
       res.status(400).json({

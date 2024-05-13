@@ -32,7 +32,7 @@ router.post("/add", auth, role.check(ROLES.Admin), async (req, res) => {
 });
 
 // search skills api
-router.get("/autocomplete/:query", auth, async (req, res) => {
+router.get("/:query", async (req, res) => {
    try {
       const query = req.params.query;
 
@@ -41,7 +41,7 @@ router.get("/autocomplete/:query", auth, async (req, res) => {
       }).limit(10);
 
       res.status(200).json({
-         skills,
+         data: skills,
       });
    } catch (error) {
       res.status(400).json({

@@ -2,8 +2,16 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 const Dropdown = (props) => {
-   const { options, handleOptionClick, name, placeholder, selectedItem } =
-      props;
+   const {
+      options,
+      onChange,
+      name,
+      placeholder,
+      selectedItem,
+      className,
+      position = "top-[55px]",
+      hoverExpand,
+   } = props;
 
    const dropdownRef = useRef(null);
 
@@ -32,7 +40,7 @@ const Dropdown = (props) => {
    };
 
    const onSelect = (option) => {
-      handleOptionClick(option);
+      onChange(option);
       setIsOpen(false);
    };
 
@@ -43,11 +51,13 @@ const Dropdown = (props) => {
          className="relative w-full"
          ref={dropdownRef}
          onMouseDown={handleClickOutside}
+         onMouseLeave={() => hoverExpand && setIsOpen(false)}
       >
          <input
             type="text"
-            className="input cursor-default"
+            className={`input cursor-default ${className}`}
             onClick={toggleDropdown}
+            onMouseOver={() => hoverExpand && setIsOpen(true)}
             placeholder={placeholder}
             value={value}
             name={name}
@@ -62,14 +72,15 @@ const Dropdown = (props) => {
          </div>
 
          <div
-            className={`absolute top-[55px] min-w-full bg-white dark:bg-mediumGrey max-h-56 rounded-md border border-gray-300 dark:border-gray-600 transform transition-all duration-300 ease-in-out shadow-md z-20 overflow-auto ${
+            className={`absolute ${position} min-w-full bg-white dark:bg-mediumGrey max-h-56 rounded-md border border-gray-300 dark:border-gray-600 ease-in-out-transition shadow-md z-20 overflow-auto ${
                isOpen ? "opacity-100 visible" : "opacity-0 invisible"
             }`}
+            onMouseEnter={() => hoverExpand && setIsOpen(true)}
          >
             <ul>
                {options.map((option) => (
                   <li
-                     className={`flex items-center space-x-3 text-sm font-medium hover:bg-primary/20 dark:hover:bg-primary/20 px-4 py-3 cursor-default ${
+                     className={`flex items-center space-x-3 text-md font-medium hover:bg-primary/20 dark:hover:bg-primary/20 px-4 py-2 cursor-default ${
                         option.value === selectedItem
                            ? "text-primary"
                            : "text-gray-800 dark:text-gray-200"
