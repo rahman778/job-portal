@@ -41,6 +41,10 @@ const SearchFilter = ({ placeValue = "", searchValue }) => {
          searchParams.delete("location");
       }
 
+      searchParams.set("sort", 'recency');
+      searchParams.set("page", 1);
+      searchParams.set("limit", '10');
+
       navigate({
          pathname: "/jobs",
          search: searchParams.toString(),
@@ -58,13 +62,13 @@ const SearchFilter = ({ placeValue = "", searchValue }) => {
 
    return (
       <form onSubmit={handleFormSubmit}>
-         <div className="flex flex-col sm:flex-row bg-white dark:dark:bg-gray-900 rounded-[30px] shadow-sm">
+         <div className="flex flex-col sm:flex-row bg-white dark:bg-mediumGrey rounded-[30px] shadow-sm">
             <div className="relative flex-1">
                <span className="absolute inset-y-0 left-0 flex items-center pl-4">
                   <MagnifyingGlassIcon className="text-amber-500 h-5 w-5" />
                </span>
                <input
-                  className="w-full text-black dark:text-white text-md py-4 pl-12 pr-6 bg-white dark:bg-gray-900 border-0 rounded-r-[30px] sm:rounded-r-[0px] rounded-l-[30px] border-r border-gray-200 dark:border-gray-800 focus:ring-0 focus:border-inherit"
+                  className="w-full text-black dark:text-white text-md py-4 pl-12 pr-6 bg-white dark:bg-mediumGrey border-0 rounded-r-[30px] sm:rounded-r-[0px] rounded-l-[30px] border-r border-gray-200 dark:border-gray-600 focus:ring-0 focus:border-inherit"
                   type="text"
                   value={searchQuery}
                   placeholder="Job tilte or keywords"
@@ -109,6 +113,9 @@ const SearchFilter = ({ placeValue = "", searchValue }) => {
                <GooglePlacesAutocomplete
                   apiKey={import.meta.env.VITE_GOOGLE_API_KEY}
                   minLengthAutocomplete={2}
+                  autocompletionRequest={{
+                     types: ["(cities)"],
+                   }}
                   selectProps={{
                      placeQuery,
                      onChange: setPlaceQuery,

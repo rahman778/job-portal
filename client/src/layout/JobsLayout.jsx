@@ -1,4 +1,10 @@
-import { Outlet, Navigate, useLocation } from "react-router-dom";
+import {
+   Outlet,
+   Navigate,
+   useLocation,
+   useNavigate,
+   useSearchParams,
+} from "react-router-dom";
 
 import { useGetCategoriesQuery } from "../services/categoryService";
 
@@ -7,13 +13,26 @@ import JobsTab from "../components/Tabs/JobsTab";
 
 function JobsLayout() {
    const isLoggedIn = false;
+   const navigate = useNavigate();
    const location = useLocation();
+   const [searchParams] = useSearchParams();
 
    const { data: categories } = useGetCategoriesQuery();
 
    if (location.pathname === "/") {
       return <Navigate replace to="/recent-jobs" />;
    }
+
+   const handleCategoryClick = (id) => {
+      searchParams.set("sort", 'recency');
+      searchParams.set("page", 1);
+      searchParams.set("limit", '10');
+      searchParams.set("category", id.toString());
+      navigate({
+         pathname: "/jobs",
+         search: searchParams.toString(),
+      });
+   };
 
    return (
       <section>
@@ -46,6 +65,7 @@ function JobsLayout() {
                   {categories?.map((category) => (
                      <div
                         key={category._id}
+                        onClick={() => handleCategoryClick(category._id)}
                         className="min-h-14 flex items-center justify-between text-md  px-3 hover-transition !border-l-transparent hover:!border-l-primary border-l-[3px] hover:bg-emerald-600/10 cursor-pointer"
                      >
                         <span>{category.name}</span>

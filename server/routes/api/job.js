@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { ObjectId } = require("mongodb");
 
 const Job = require("../../models/job");
 const Recruiter = require("../../models/recruiter");
@@ -13,16 +14,16 @@ const { ROLES } = require("../../constants");
 router.get("/list", async (req, res) => {
    try {
       const {
-         sortOrder = {
-            created: -1,
-            //maxSalary: -1,
-         },
+         sort,
          max_salary,
          min_salary,
+         category,
          salary_currency = "LKR",
          job_type,
          modality,
          query,
+         experience_level,
+         date_posted,
          page = 1,
          limit = 10,
       } = req.query;
@@ -31,6 +32,18 @@ router.get("/list", async (req, res) => {
          isActive: true,
          isRemoved: false,
       };
+
+      let sortOrder = {};
+
+      if (sort === "salary") {
+         sortOrder = {
+            maxSalary: -1,
+         };
+      } else {
+         sortOrder = {
+            created: -1,
+         };
+      }
 
       if (query) {
          const queryRegex = new RegExp(query, "i");
@@ -47,6 +60,11 @@ router.get("/list", async (req, res) => {
          filterQuery.salaryCurrency = salary_currency;
       }
 
+      if (category) {
+         var catId = new ObjectId(category);
+         filterQuery.category = catId;
+      }
+
       if (job_type) {
          const jobTypes = job_type.split(",");
          filterQuery.jobType = { $in: jobTypes };
@@ -55,6 +73,15 @@ router.get("/list", async (req, res) => {
       if (modality) {
          const moadalityTypes = modality.split(",");
          filterQuery.modality = { $in: moadalityTypes };
+      }
+
+      if (experience_level) {
+         const experienceTypes = experience_level.split(",");
+         filterQuery.experienceLevel = { $in: experienceTypes };
+      }
+
+      if (date_posted && date_posted !== "anytime") {
+         filterQuery.created = { $gte: new Date(Date.now() - date_posted * 24 * 60 * 60 * 1000) };
       }
 
       const pipeline = [
@@ -101,9 +128,11 @@ router.get("/list", async (req, res) => {
 
       res.status(200).json({
          data: results,
-         totalPages: Math.ceil(count / limit),
-         currentPage,
-         count,
+         meta: {
+            totalPages: Math.ceil(count / limit),
+            currentPage,
+            count,
+         },
       });
    } catch (error) {
       console.log("error", error);
@@ -115,9 +144,23 @@ router.get("/list", async (req, res) => {
 
 //fetch job stats
 router.get("/stats", async (req, res) => {
+   const filterQuery = {};
+
+   const { query, category } = req.query;
+
+   if (query) {
+      const queryRegex = new RegExp(query, "i");
+      filterQuery.$or = [{ title: queryRegex }, { skillsets: { $in: [queryRegex] } }];
+   }
+
+   if (category) {
+      var catId = new ObjectId(category);
+      filterQuery.category = catId;
+   }
+
    try {
       const jobTypes = await Job.aggregate([
-         { $match: { isActive: true, isRemoved: false } },
+         { $match: { isActive: true, isRemoved: false, ...filterQuery } },
          {
             $group: {
                _id: "$jobType",
@@ -134,7 +177,7 @@ router.get("/stats", async (req, res) => {
       ]);
 
       const modality = await Job.aggregate([
-         { $match: { isActive: true, isRemoved: false } },
+         { $match: { isActive: true, isRemoved: false, ...filterQuery } },
          {
             $group: {
                _id: "$modality",
@@ -150,8 +193,25 @@ router.get("/stats", async (req, res) => {
          },
       ]);
 
+      const experienceLevel = await Job.aggregate([
+         { $match: { isActive: true, isRemoved: false, ...filterQuery } },
+         {
+            $group: {
+               _id: "$experienceLevel",
+               count: { $sum: 1 },
+            },
+         },
+         {
+            $project: {
+               label: "$_id",
+               count: 1,
+               _id: 0,
+            },
+         },
+      ]);
+
       res.status(200).json({
-         data: { jobTypes, modality },
+         data: { jobTypes, modality, experienceLevel },
       });
    } catch (error) {
       res.status(400).json({

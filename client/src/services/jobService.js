@@ -12,8 +12,9 @@ export const jobAPI = createApi({
          }),
       }),
       getJobStats: build.query({
-         query: () => ({
+         query: (filters) => ({
             url: `/api/job/stats`,
+            params:filters
          }),
       }),
    }),
