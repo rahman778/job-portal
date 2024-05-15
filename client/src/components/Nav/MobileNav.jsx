@@ -26,8 +26,7 @@ const links = [
 ];
 
 const MobileNav = (props) => {
-   const { routes, isOpen, setIsOpen } = props;
-   const user = {};
+   const { routes, isOpen, setIsOpen, isSignedIn, onLogout } = props;
 
    return (
       <div
@@ -88,13 +87,16 @@ const MobileNav = (props) => {
                   ))}
                </div>
                <div>
-                  {user ? (
+                  {isSignedIn ? (
                      <Avatar top={"-bottom-[65px]"}>
                         <ul className="py-3  text-md min-w-28">
                            <li className="hover:bg-primary/20 dark:hover:bg-primary/20 px-4 py-1 cursor-pointer">
                               Profile
                            </li>
-                           <li className="button transparent-btn px-4 py-1 cursor-pointer">
+                           <li
+                              onClick={onLogout}
+                              className="button transparent-btn px-4 py-1 cursor-pointer"
+                           >
                               Logout
                            </li>
                         </ul>

@@ -1,4 +1,13 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+
+import { authActions } from "../../state/auth";
+import { useSignUpMutation } from "../../services/authService";
+
+import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME, ROLES } from "../../constants";
 
 import AuthLayout from "../../layout/AuthLayout";
 import AnimateSpin from "../../components/Loaders/AnimateSpin";
@@ -6,24 +15,64 @@ import {
    BriefcaseIcon,
    BuildingOffice2Icon,
 } from "@heroicons/react/24/outline";
+import Input from "../../components/Forms/Input";
+import PhoneInput from "../../components/Forms/PhoneInput";
 
 function SignupPage() {
-   const [loading] = useState(false);
+   const dispatch = useDispatch();
+   const navigate = useNavigate();
+
+   const [isLoading, setIsLoading] = useState(false);
    const [role, setRole] = useState(null);
    const [isRoleSelected, setIsRoleSelected] = useState(false);
-   const [formValues, setFormValues] = useState({
-      name: "",
-      email: "",
-      password: "",
-   });
 
-   const onSubmit = async (e) => {
-      e.preventDefault();
-   };
+   const [signUp] = useSignUpMutation();
 
-   const handleChange = (event) => {
-      const { name, value } = event.target;
-      setFormValues({ ...formValues, [name]: value });
+   const {
+      register,
+      handleSubmit,
+      control,
+      formState: { errors },
+   } = useForm({ mode: "onBlur" });
+
+   const onSubmit = async (values) => {
+      let formValues = {
+         ...values,
+         role,
+      };
+
+      try {
+         setIsLoading(true);
+         const res = await signUp({
+            values: formValues,
+         });
+
+         if (res.error) {
+            toast.error(res.error.data.message || "Something went wrong", {
+               position: "top-right",
+            });
+            return;
+         }
+
+         if (res.data.success) {
+            sessionStorage.setItem(
+               ACCESS_TOKEN_NAME,
+               JSON.stringify(res.data.accessToken)
+            );
+            localStorage.setItem(
+               REFRESH_TOKEN_NAME,
+               JSON.stringify(res.data.refreshToken)
+            );
+            toast.success("Signup successful 🔓");
+
+            dispatch(authActions.setUser(res.data.user));
+            navigate("/");
+         }
+      } catch (error) {
+         console.log("error", error);
+      } finally {
+         setIsLoading(false);
+      }
    };
 
    const onRoleSelect = () => {
@@ -39,9 +88,9 @@ function SignupPage() {
                </h2>
                <div className="flex items-center justify-center gap-x-6 mt-5">
                   <div
-                     onClick={() => setRole("recruiter")}
+                     onClick={() => setRole(ROLES.Recruiter)}
                      className={`border w-44 h-40 rounded-sm p-4 cursor-pointer active:scale-95 hover-transition hover:border-primary hover:bg-emerald-600/10 ${
-                        role === "recruiter"
+                        role === ROLES.Recruiter
                            ? "border-primary bg-emerald-600/10"
                            : ""
                      }`}
@@ -52,9 +101,9 @@ function SignupPage() {
                      </span>
                   </div>
                   <div
-                     onClick={() => setRole("candidate")}
+                     onClick={() => setRole(ROLES.Candidate)}
                      className={`border w-44 h-40 rounded-sm p-4  cursor-pointer active:scale-95 hover-transition hover:border-primary hover:bg-emerald-600/10  ${
-                        role === "candidate"
+                        role === ROLES.Candidate
                            ? "border-primary bg-emerald-600/10"
                            : ""
                      }`}
@@ -76,62 +125,107 @@ function SignupPage() {
                </div>
             </div>
          ) : (
-            <form className="space-y-6" autoComplete="off" onSubmit={onSubmit}>
+            <form
+               className="space-y-4"
+               autoComplete="off"
+               onSubmit={handleSubmit(onSubmit)}
+            >
                <div>
-                  <label htmlFor="name" className="label">
-                     Name
-                  </label>
-                  <div className="mt-1">
-                     <input
-                        required
-                        type="text"
-                        name="name"
-                        value={formValues.name}
-                        onChange={handleChange}
-                        placeholder="Type your name"
-                        className="input py-2.5"
-                     />
-                  </div>
+                  <Input
+                     {...register("firstName", {
+                        required: "Please enter first name",
+                     })}
+                     name="firstName"
+                     placeholder="Type your first name"
+                     labelText="First Name"
+                     error={errors.firstName ? true : false}
+                     helperText={
+                        errors.firstName ? errors.firstName.message : null
+                     }
+                  />
                </div>
                <div>
-                  <label htmlFor="email" className="label">
-                     Email
-                  </label>
-                  <div className="mt-1">
-                     <input
-                        required
-                        type="email"
-                        name="email"
-                        value={formValues.email}
-                        onChange={handleChange}
-                        placeholder="Type your email"
-                        className="input py-2.5"
-                     />
-                  </div>
+                  <Input
+                     {...register("lastName", {
+                        required: "Please enter last name",
+                     })}
+                     name="lastName"
+                     placeholder="Type your last name"
+                     labelText="Last Name"
+                     error={errors.lastName ? true : false}
+                     helperText={
+                        errors.lastName ? errors.lastName.message : null
+                     }
+                  />
                </div>
                <div>
-                  <label htmlFor="password" className="label">
-                     Password
-                  </label>
-                  <div className="mt-1">
-                     <input
-                        required
-                        type="password"
-                        name="password"
-                        value={formValues.password}
-                        onChange={handleChange}
-                        placeholder="Type your password"
-                        className="input py-2.5"
-                     />
-                  </div>
+                  <PhoneInput
+                     {...register("phoneNumber", {
+                        required: "Please enter mobile number",
+                        minLength: {
+                           value: 10,
+                           message: "Please enter valid mobile number",
+                        },
+                     })}
+                     control={control}
+                     name="phoneNumber"
+                     placeholder="Type your last name"
+                     labelText="Mobile"
+                     error={errors.phoneNumber ? true : false}
+                     helperText={
+                        errors.phoneNumber ? errors.phoneNumber.message : null
+                     }
+                  />
+               </div>
+               <div>
+                  <Input
+                     {...register("email", {
+                        required: "Please enter email",
+                        pattern: {
+                           // eslint-disable-next-line no-useless-escape
+                           value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,})+$/,
+                           message: "Please enter valid email.",
+                        },
+                     })}
+                     name="email"
+                     placeholder="Type your email"
+                     labelText="Email"
+                     error={errors.email ? true : false}
+                     helperText={errors.email ? errors.email.message : null}
+                  />
+               </div>
+               <div>
+                  <Input
+                     {...register("password", {
+                        required: "Please enter password",
+                        minLength: {
+                           value: 8,
+                           message:
+                              "Password minimum length should be 8 characters",
+                        },
+                        pattern: {
+                           value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+                           message:
+                              "Password must contain at least one lowercase letter, one uppercase letter and one numeric digit",
+                        },
+                     })}
+                     name="password"
+                     placeholder="Type your password"
+                     labelText="Password"
+                     error={errors.password ? true : false}
+                     helperText={
+                        errors.password ? errors.password.message : null
+                     }
+                     type="password"
+                  />
                </div>
                <div>
                   <button
                      type="submit"
-                     className="button primary-btn w-full mt-1 py-2.5"
-                     disabled={loading}
+                     className="button primary-btn click-transition mt-5 w-full py-3"
+                     disabled={isLoading}
                   >
-                     {loading ? <AnimateSpin /> : "Sign up"}
+                     {isLoading ? <AnimateSpin /> : "Sign up"}
                   </button>
                </div>
             </form>

@@ -1,10 +1,24 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 import BackButton from "../../components/Buttons/BackButton";
 import Dropdown from "../../components/Forms/Dropdown";
 import MultiSelect from "../../components/Forms/MultiSelect";
+import AnimateSpin from "../../components/Loaders/AnimateSpin";
+import Input from "../../components/Forms/Input";
 
 function JobCreatePage() {
+   const [isLoading, setIsLoading] = useState(false);
+
+   const {
+      register,
+      handleSubmit,
+      formState: { errors },
+   } = useForm({ mode: "onBlur" });
+
+   const onSubmit = async (values) => {
+      console.log("values", values);
+   };
    const [selectedOption, setSelectedOption] = useState(null);
 
    const options = [
@@ -21,12 +35,21 @@ function JobCreatePage() {
                Post a New Job
             </h1>
             <div className="max-w-5xl bg-white dark:bg-darkGrey mx-auto p-2 lg:py-6 lg:px-10 rounded-lg mt-5">
-               <form action="">
+               <form onSubmit={handleSubmit(onSubmit)}>
                   <div>
-                     <label htmlFor="" className="inline-block mb-1.5 text-lg">
-                        Job Title*
-                     </label>
-                     <input type="text" name="" id="" className="input" />
+                     <Input
+                        {...register("ttile", {
+                           required: "Please enter ttile",
+                        })}
+                        name="title"
+                        placeholder="Type your job title"
+                        labelText="Job Title"
+                        error={errors.password ? true : false}
+                        helperText={
+                           errors.password ? errors.password.message : null
+                        }
+                        requiredMarker
+                     />
                   </div>
                   <div className="mt-5">
                      <label htmlFor="" className="inline-block mb-1.5 text-lg">
@@ -112,6 +135,16 @@ function JobCreatePage() {
                            />
                         </div>
                      </div>
+                  </div>
+
+                  <div className="mt-8 flex justify-end">
+                     <button
+                        type="submit"
+                        className="button primary-btn click-transition w-full max-w-md py-3"
+                        disabled={isLoading}
+                     >
+                        {isLoading ? <AnimateSpin /> : "submit"}
+                     </button>
                   </div>
                </form>
             </div>

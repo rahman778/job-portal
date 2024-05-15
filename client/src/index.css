@@ -10,7 +10,7 @@
 
 @layer components {
    .button {
-      @apply inline-flex cursor-pointer items-center justify-center rounded-md border border-transparent py-2 px-4 text-sm font-medium;
+      @apply inline-flex cursor-pointer items-center justify-center rounded-md border border-transparent py-2 px-4 text-md font-medium;
    }
 
    .primary-btn {
@@ -34,7 +34,7 @@
    }
 
    .input {
-      @apply py-3.5 px-4 text-sm text-gray-700 dark:text-gray-100 bg-transparent dark:bg-transparent rounded-sm  w-full placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/90 focus:border-transparent;
+      @apply py-3.5 px-4 text-md text-gray-700 dark:text-gray-100 bg-transparent dark:bg-transparent rounded-sm  w-full placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/90 focus:border-transparent;
    }
 
    .link {
@@ -46,7 +46,7 @@
    }
 
    .label {
-      @apply text-gray-600 dark:text-gray-100 text-sm;
+      @apply text-gray-600 dark:text-gray-100 text-md;
    }
 
    .hover-transition {

@@ -1,6 +1,7 @@
 import { RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { Provider } from "react-redux";
+import { Toaster } from 'react-hot-toast';
 
 import { store } from "./store";
 
@@ -11,6 +12,7 @@ function App() {
       <Provider store={store}>
          <ThemeProvider attribute="class">
             <RouterProvider router={router} />
+            <Toaster />
          </ThemeProvider>
       </Provider>
    );

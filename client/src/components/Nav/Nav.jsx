@@ -1,4 +1,10 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import { authActions } from "../../state/auth";
+
 import { BriefcaseIcon } from "@heroicons/react/24/outline";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
@@ -13,15 +19,32 @@ const routes = [
 ];
 
 const Nav = () => {
+   const dispatch = useDispatch();
+   const navigate = useNavigate();
+
    const [isOpen, setIsOpen] = useState(false);
+
+   const { isSignedIn } = useSelector((state) => state.auth);
+
+   const onLogout = () => {
+      dispatch(authActions.logout());
+      navigate(0);
+   };
 
    return (
       <>
-         <DesktopNav routes={routes} setIsOpen={setIsOpen}></DesktopNav>
+         <DesktopNav
+            routes={routes}
+            setIsOpen={setIsOpen}
+            isSignedIn={isSignedIn}
+            onLogout={onLogout}
+         ></DesktopNav>
          <MobileNav
             routes={routes}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+            isSignedIn={isSignedIn}
+            onLogout={onLogout}
          ></MobileNav>
       </>
    );
