@@ -5,6 +5,7 @@ import {
    useNavigate,
    useSearchParams,
 } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import { useGetCategoriesQuery } from "../services/categoryService";
 
@@ -12,21 +13,25 @@ import SearchFilter from "../components/Filter/SearchFilter";
 import JobsTab from "../components/Tabs/JobsTab";
 
 function JobsLayout() {
-   const isLoggedIn = false;
    const navigate = useNavigate();
    const location = useLocation();
    const [searchParams] = useSearchParams();
 
-   const { data: categories } = useGetCategoriesQuery();
+   const { isSignedIn } = useSelector((state) => state.auth);
+
+   const { data: categories } = useGetCategoriesQuery( {},
+      { refetchOnMountOrArgChange: true });
 
    if (location.pathname === "/") {
       return <Navigate replace to="/recent-jobs" />;
    }
 
+   console.log('categories', categories)
+
    const handleCategoryClick = (id) => {
-      searchParams.set("sort", 'recency');
+      searchParams.set("sort", "recency");
       searchParams.set("page", 1);
-      searchParams.set("limit", '10');
+      searchParams.set("limit", "10");
       searchParams.set("category", id.toString());
       navigate({
          pathname: "/jobs",
@@ -54,7 +59,7 @@ function JobsLayout() {
 
          {/* Job List */}
          <div className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
-            {isLoggedIn && (
+            {isSignedIn && (
                <div className="w-3/4 ml-auto mb-5">
                   <JobsTab />
                </div>

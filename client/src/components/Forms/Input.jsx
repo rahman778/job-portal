@@ -1,31 +1,22 @@
-import { forwardRef } from "react";
-import { PhoneInput as MobileInput } from "react-international-phone";
+import React from "react";
 
-import { useController } from "react-hook-form";
+const requiredmarkerCls =
+   `after:content-['*'] after:ml-0.5 after:text-red-500`;
 
-import "react-international-phone/style.css";
-
-const requiredmarkerCls = `after:content-['*'] after:ml-0.5 after:text-red-500`;
-
-const PhoneInput = forwardRef(
+const Input = React.forwardRef(
    (
       {
          labelText,
          name,
          error,
          helperText,
+         type = "text",
          placeholder,
          requiredMarker,
-         control,
          ...rest
       },
       ref
    ) => {
-      const { field } = useController({
-         name,
-         control,
-      });
-
       return (
          <>
             {labelText && (
@@ -39,26 +30,19 @@ const PhoneInput = forwardRef(
                </label>
             )}
             <div className="relative">
-               <MobileInput
-                  defaultCountry="lk"
-                  value={field.value}
+               <input
                   ref={ref}
-                  inputClassName="input !text-md !text-gray-700 dark:!text-gray-100 min-h-[50px] !border-0"
-                  className={`rounded-sm border border-[#6B7280] ${
+                  className={`input ${
                      error &&
                      "border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500/30"
                   } `}
-                  countrySelectorStyleProps={{
-                     buttonClassName:
-                        "p-4 min-h-[50px] !border-l-0 !border-t-0 !border-b-0 !border-r-1 border-r-[#6B7280]",
-                  }}
+                  type={type}
                   placeholder={placeholder}
-                  inputProps={{
-                     name: name,
-                     ...rest,
-                  }}
+                  id={name}
                   name={name}
+                  {...rest}
                />
+
                <span
                   className={`absolute top-full left-0 mt-0.5 text-xs text-red-600 ${
                      error ? "visible" : "invisible"
@@ -72,6 +56,6 @@ const PhoneInput = forwardRef(
    }
 );
 
-PhoneInput.displayName = "PhoneInput";
+Input.displayName = "Input";
 
-export default PhoneInput;
+export default Input;

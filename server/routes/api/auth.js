@@ -13,7 +13,7 @@ const Recruiter = require("../../models/recruiter");
 
 const mailgun = require("../../services/mailgun");
 const keys = require("../../config/keys");
-const { EMAIL_PROVIDER, ROLES } = require("../../constants");
+const { EMAIL_PROVIDER, ROLES, PASSWORD_REGEX } = require("../../constants");
 
 const { accessSecret, accessTokenLife, refreshSecret, refreshTokenLife } = keys.jwt;
 
@@ -22,21 +22,21 @@ router.post("/login", async (req, res) => {
       const { email, password } = req.body;
 
       if (!email) {
-         return res.status(400).json({ error: "You must enter an email address." });
+         return res.status(400).json({ message: "You must enter an email address." });
       }
 
       if (!password) {
-         return res.status(400).json({ error: "You must enter a password." });
+         return res.status(400).json({ message: "You must enter a password." });
       }
 
       const user = await User.findOne({ email });
       if (!user) {
-         return res.status(400).send({ error: "Invalid Credentials" });
+         return res.status(400).send({ message: "Invalid Credentials" });
       }
 
       if (user && user.provider !== EMAIL_PROVIDER.Email) {
          return res.status(400).send({
-            error: `Rmail address is already in use using ${user.provider} provider.`,
+            message: `Email address is already in use using ${user.provider} provider.`,
          });
       }
 
@@ -44,8 +44,7 @@ router.post("/login", async (req, res) => {
 
       if (!isMatch) {
          return res.status(400).json({
-            success: false,
-            error: "Invalid Credentials",
+            message: "Invalid Credentials",
          });
       }
 
@@ -76,7 +75,7 @@ router.post("/login", async (req, res) => {
       });
    } catch (error) {
       res.status(400).json({
-         error: "Your request could not be processed. Please try again.",
+         message: "Your request could not be processed. Please try again.",
       });
    }
 });
@@ -88,7 +87,14 @@ router.post("/register", async (req, res) => {
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
-         return res.status(400).json({ error: "Email address is already in use." });
+         return res.status(400).json({ message: "Email address is already in use." });
+      }
+
+      if (!PASSWORD_REGEX.test(password)) {
+         return res.status(400).json({
+            message:
+               "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter and one numeric digit.",
+         });
       }
 
       const buffer = crypto.randomBytes(48);
@@ -151,10 +157,7 @@ router.post("/register", async (req, res) => {
          },
       });
    } catch (error) {
-      console.log("error", error);
-      res.status(400).json({
-         error,
-      });
+      res.status(400).json({ message: error });
    }
 });
 

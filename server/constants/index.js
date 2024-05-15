@@ -48,3 +48,5 @@ exports.EMAIL_PROVIDER = {
 };
 
 exports.JWT_COOKIE = "x-jwt-cookie";
+
+exports. PASSWORD_REGEX = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;

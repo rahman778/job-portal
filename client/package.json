@@ -19,6 +19,8 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-google-places-autocomplete": "^4.0.1",
+    "react-hook-form": "^7.51.4",
+    "react-hot-toast": "^2.4.1",
     "react-international-phone": "^4.2.6",
     "react-paginate": "^8.2.0",
     "react-responsive-modal": "^6.4.2",

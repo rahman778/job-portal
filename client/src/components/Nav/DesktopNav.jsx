@@ -4,15 +4,14 @@ import ThemeButton from "../Buttons/ThemeButton";
 import Avatar from "../Core/Avatar";
 
 const DesktopNav = (props) => {
-   const { routes, setIsOpen } = props;
+   const { routes, setIsOpen, isSignedIn, onLogout } = props;
 
    const navigate = useNavigate();
-
-   const user = {};
 
    const toggleMobileDrawer = () => {
       setIsOpen(true);
    };
+
    return (
       <nav className="sticky bg-white dark:bg-darkGrey shadow-sm dark:shadow-gray-800 z-10">
          <div className="max-w-7xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
@@ -39,7 +38,7 @@ const DesktopNav = (props) => {
                <div className="flex items-center ">
                   <ThemeButton />
                   <div className="hidden lg:ml-2 lg:flex lg:items-center">
-                     {user ? (
+                     {isSignedIn ? (
                         <Avatar top={"top-[60px]"} right={"right-[30px]"}>
                            <ul className="py-3  text-md min-w-28">
                               <li
@@ -48,7 +47,10 @@ const DesktopNav = (props) => {
                               >
                                  Profile
                               </li>
-                              <li className="button transparent-btn px-4 py-1 cursor-pointer">
+                              <li
+                                 onClick={onLogout}
+                                 className="button transparent-btn px-4 py-1 cursor-pointer"
+                              >
                                  Logout
                               </li>
                            </ul>

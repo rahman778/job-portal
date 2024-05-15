@@ -2,6 +2,7 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Mutex } from "async-mutex";
 
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../constants";
+import { getToken } from "../utils/token";
 
 export const publicBaseQuery = fetchBaseQuery({
    baseUrl: import.meta.env.VITE_REACT_APP_API_BASE,
@@ -12,7 +13,7 @@ const baseQueryWithAuthHeaders = fetchBaseQuery({
    baseUrl: import.meta.env.VITE_REACT_APP_API_BASE,
    prepareHeaders: (headers) => {
       // this method should retrieve the token without a hook
-      const token = localStorage.getItem(ACCESS_TOKEN_NAME);
+      const token = getToken();
 
       if (token) {
          headers.set("authorization", `Bearer ${token}`);
