@@ -63,15 +63,20 @@ const JobSchema = new Schema({
    location: {
       type: String,
    },
-   minSalary: {
-      type: Number,
-   },
-   maxSalary: {
-      type: Number,
-   },
-   salaryCurrency: {
-      type: String,
-   },
+   salary: {
+      minSalary: {
+         type: Number,
+      },
+      maxSalary: {
+         type: Number,
+      },
+      frequency: {
+         type: String,
+      },
+      currency: {
+         type: String,
+      },
+   },  
    deadline: {
       type: Date,
    },

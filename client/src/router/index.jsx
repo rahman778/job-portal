@@ -51,11 +51,11 @@ const router = createBrowserRouter([
             element: <UserProfile />,
          },
          {
-            path: "company/",
+            path: "company/:companyId",
             element: <JobListingPage />,
          },
          {
-            path: "company/job/create",
+            path: "company/:companyId/job/create",
             element: <JobCreatePage />,
          },
          {

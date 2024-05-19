@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { useGetCategoriesQuery } from "../services/categoryService";
+import { useGetCategoryCountQuery } from "../services/categoryService";
 
 import SearchFilter from "../components/Filter/SearchFilter";
 import JobsTab from "../components/Tabs/JobsTab";
@@ -19,14 +19,12 @@ function JobsLayout() {
 
    const { isSignedIn } = useSelector((state) => state.auth);
 
-   const { data: categories } = useGetCategoriesQuery( {},
+   const { data: categories } = useGetCategoryCountQuery( {},
       { refetchOnMountOrArgChange: true });
 
    if (location.pathname === "/") {
       return <Navigate replace to="/recent-jobs" />;
    }
-
-   console.log('categories', categories)
 
    const handleCategoryClick = (id) => {
       searchParams.set("sort", "recency");

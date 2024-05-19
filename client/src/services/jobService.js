@@ -1,9 +1,9 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { publicBaseQuery } from "./baseQueries";
+import { baseQueryWithReauth } from "./baseQueries";
 
 export const jobAPI = createApi({
    reducerPath: "jobAPI",
-   baseQuery: publicBaseQuery,
+   baseQuery: baseQueryWithReauth,
    endpoints: (build) => ({
       getJobs: build.query({
          query: (filters) => ({
@@ -17,7 +17,14 @@ export const jobAPI = createApi({
             params:filters
          }),
       }),
+      addJob: build.mutation({
+         query: ({ values }) => ({
+            url: `/api/job//add`,
+            method: "POST",
+            body: { ...values },
+         }),
+      }),
    }),
 });
 
-export const { useGetJobsQuery, useGetJobStatsQuery } = jobAPI;
+export const { useGetJobsQuery, useGetJobStatsQuery, useAddJobMutation } = jobAPI;

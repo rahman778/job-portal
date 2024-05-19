@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -26,7 +26,7 @@ function SignupPage() {
    const [role, setRole] = useState(null);
    const [isRoleSelected, setIsRoleSelected] = useState(false);
 
-   const [signUp] = useSignUpMutation();
+   const [signUp, { error: signUpError }] = useSignUpMutation();
 
    const {
       register,
@@ -34,6 +34,14 @@ function SignupPage() {
       control,
       formState: { errors },
    } = useForm({ mode: "onBlur" });
+
+   useEffect(() => {
+      if (signUpError) {
+         toast.error(signUpError.data.message || "Something went wrong", {
+            position: "top-right",
+         });
+      }
+   }, [signUpError]);
 
    const onSubmit = async (values) => {
       let formValues = {
@@ -43,35 +51,38 @@ function SignupPage() {
 
       try {
          setIsLoading(true);
-         const res = await signUp({
+         const { data } = await signUp({
             values: formValues,
          });
 
-         if (res.error) {
-            toast.error(res.error.data.message || "Something went wrong", {
-               position: "top-right",
-            });
-            return;
-         }
-
-         if (res.data.success) {
+         if (data.success) {
             sessionStorage.setItem(
                ACCESS_TOKEN_NAME,
-               JSON.stringify(res.data.accessToken)
+               JSON.stringify(data.accessToken)
             );
             localStorage.setItem(
                REFRESH_TOKEN_NAME,
-               JSON.stringify(res.data.refreshToken)
+               JSON.stringify(data.refreshToken)
             );
             toast.success("Signup successful 🔓");
 
-            dispatch(authActions.setUser(res.data.user));
-            navigate("/");
+            dispatch(authActions.setUser(data.user));
+            checkRole(data.user);
          }
       } catch (error) {
          console.log("error", error);
       } finally {
          setIsLoading(false);
+      }
+   };
+
+   const checkRole = (user) => {
+      if (user.role === ROLES.Candidate) {
+         navigate("/");
+      } else if (user.role === ROLES.Recruiter) {
+         navigate(`/company/${user.id}`);
+      } else if (user.role === ROLES.Admin) {
+         navigate("/admin");
       }
    };
 
@@ -158,6 +169,26 @@ function SignupPage() {
                      }
                   />
                </div>
+
+               {role === ROLES.Recruiter && (
+                  <div>
+                     <Input
+                        {...register("companyName", {
+                           required: "Please enter company name",
+                        })}
+                        name="companyName"
+                        placeholder="Type your company name"
+                        labelText="Company Name"
+                        error={errors.companyName ? true : false}
+                        helperText={
+                           errors.companyName
+                              ? errors.companyName.message
+                              : null
+                        }
+                     />
+                  </div>
+               )}
+
                <div>
                   <PhoneInput
                      {...register("phoneNumber", {

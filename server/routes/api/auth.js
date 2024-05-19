@@ -61,7 +61,7 @@ router.post("/login", async (req, res) => {
       // Generate a refresh token
       const refreshToken = jwt.sign(payload, refreshSecret, { expiresIn: refreshTokenLife });
 
-      res.status(200).json({
+      res.status(201).json({
          success: true,
          accessToken,
          refreshToken,
@@ -95,6 +95,10 @@ router.post("/register", async (req, res) => {
             message:
                "Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter and one numeric digit.",
          });
+      }
+
+      if (role === ROLES.Recruiter && !companyName) {
+         return res.status(400).json({ message: "Company name is required" });
       }
 
       const buffer = crypto.randomBytes(48);
@@ -143,7 +147,7 @@ router.post("/register", async (req, res) => {
       // Generate a refresh token
       const refreshToken = jwt.sign(payload, refreshSecret, { expiresIn: refreshTokenLife });
 
-      res.status(200).json({
+      res.status(201).json({
          success: true,
          accessToken,
          refreshToken,

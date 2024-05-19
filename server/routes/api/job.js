@@ -37,7 +37,7 @@ router.get("/list", async (req, res) => {
 
       if (sort === "salary") {
          sortOrder = {
-            maxSalary: -1,
+            "salary.maxSalary": -1,
          };
       } else {
          sortOrder = {
@@ -51,13 +51,13 @@ router.get("/list", async (req, res) => {
       }
 
       if (min_salary) {
-         filterQuery.minSalary = { $gte: parseInt(min_salary) };
-         filterQuery.salaryCurrency = salary_currency;
+         filterQuery["salary.minSalary"] = { $gte: parseInt(min_salary) };
+         filterQuery["salary.currency"] = salary_currency;
       }
 
       if (max_salary) {
-         filterQuery.maxSalary = { $lte: parseInt(max_salary) };
-         filterQuery.salaryCurrency = salary_currency;
+         filterQuery["salary.maxSalary"] = { $lte: parseInt(max_salary) };
+         filterQuery["salary.currency"] = salary_currency;
       }
 
       if (category) {
@@ -229,16 +229,15 @@ router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, 
          maxApplicants,
          activeApplications,
          acceptedCandidates,
-         dateOfPosting,
          deadline,
          skillsets,
          jobType,
          modality,
+         experienceLevel,
          location,
-         minSalary,
-         maxSalary,
-         salaryCurrency,
+         salary,
          recruiterId,
+         category
       } = req.body;
 
       let recruiter;
@@ -257,27 +256,26 @@ router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, 
          maxApplicants,
          activeApplications,
          acceptedCandidates,
-         dateOfPosting,
          deadline,
          skillsets,
          jobType,
          modality,
+         experienceLevel,
          location,
-         minSalary,
-         maxSalary,
-         salaryCurrency,
+         salary,
+         category
       });
 
       const savedJob = await job.save();
 
-      res.status(200).json({
+      res.status(201).json({
          success: true,
          message: `Job has been added successfully!`,
          product: savedJob,
       });
    } catch (error) {
       res.status(400).json({
-         error,
+         message:error,
       });
    }
 });

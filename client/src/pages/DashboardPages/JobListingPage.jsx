@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
    ChevronRightIcon,
@@ -8,6 +8,7 @@ import {
 
 function JobListingPage() {
    const navigate = useNavigate();
+   const { companyId } = useParams();
 
    return (
       <section className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
@@ -21,7 +22,7 @@ function JobListingPage() {
                         </h3>
                         <div className="relative flex flex-wrap items-center my-2">
                            <button
-                              onClick={() => navigate("/company/job/create")}
+                              onClick={() => navigate(`/company/${companyId}/job/create`)}
                               className="button secondary-btn flex items-center justify-center gap-x-2"
                            >
                               <span>Post a job</span>

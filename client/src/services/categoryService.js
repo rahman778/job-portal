@@ -11,7 +11,13 @@ export const categoryAPI = createApi({
          }),
          transformResponse: (response) => response.data,
       }),
+      getCategoryCount: build.query({
+         query: () => ({
+            url: `/api/category/count`,
+         }),
+         transformResponse: (response) => response.data,
+      }),
    }),
 });
 
-export const { useGetCategoriesQuery } = categoryAPI;
+export const { useGetCategoriesQuery, useGetCategoryCountQuery } = categoryAPI;

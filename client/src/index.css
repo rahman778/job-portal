@@ -61,6 +61,10 @@
       @apply transform transition duration-300 cursor-pointer active:scale-95;
    }
 
+   .required-marker {
+      @apply after:content-['*'] after:ml-0.5 after:text-red-500
+   }
+
 }
 
 @layer utilities {
@@ -99,3 +103,11 @@
 .react-select__input:focus {
    box-shadow: none;
 }
+
+.public-DraftStyleDefault-block {
+   margin: 0.25rem 0;
+}
+
+.react-select__placeholder {
+   color: rgb(148 163 184) !important;
+ }
