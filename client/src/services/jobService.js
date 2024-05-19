@@ -8,13 +8,19 @@ export const jobAPI = createApi({
       getJobs: build.query({
          query: (filters) => ({
             url: `/api/job/list`,
-            params:filters
+            params: filters,
          }),
+      }),
+      getCompanyJobs: build.query({
+         query: () => ({
+            url: `/api/job/list/company`,
+         }),
+         transformResponse: (response) => response.jobs,
       }),
       getJobStats: build.query({
          query: (filters) => ({
             url: `/api/job/stats`,
-            params:filters
+            params: filters,
          }),
       }),
       addJob: build.mutation({
@@ -27,4 +33,9 @@ export const jobAPI = createApi({
    }),
 });
 
-export const { useGetJobsQuery, useGetJobStatsQuery, useAddJobMutation } = jobAPI;
+export const {
+   useGetJobsQuery,
+   useGetCompanyJobsQuery,
+   useGetJobStatsQuery,
+   useAddJobMutation,
+} = jobAPI;

@@ -100,7 +100,13 @@ router.get("/list", async (req, res) => {
                user: {
                   user: 0,
                   isActive: 0,
+                  status: 0,
                },
+               description: 0,
+               isActive: 0,
+               isRemoved: 0,
+               acceptedCandidates: 0,
+               activeApplications: 0,
             },
          },
       ];
@@ -138,6 +144,27 @@ router.get("/list", async (req, res) => {
       console.log("error", error);
       res.status(400).json({
          error,
+      });
+   }
+});
+
+// fetch company jobs api
+router.get("/list/company", auth, async (req, res) => {
+   try {
+      const user = req.user._id;
+
+      const recruiterDoc = await Recruiter.findOne({ user });
+
+      const jobs = await Job.find({ user: recruiterDoc._id })
+         .select("title activeApplications isActive isRemoved deadline")
+         .sort("-created");
+
+      res.status(200).json({
+         jobs,
+      });
+   } catch (error) {
+      res.status(400).json({
+         error: "Your request could not be processed. Please try again.",
       });
    }
 });
@@ -237,7 +264,7 @@ router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, 
          location,
          salary,
          recruiterId,
-         category
+         category,
       } = req.body;
 
       let recruiter;
@@ -263,7 +290,7 @@ router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, 
          experienceLevel,
          location,
          salary,
-         category
+         category,
       });
 
       const savedJob = await job.save();
@@ -275,7 +302,7 @@ router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, 
       });
    } catch (error) {
       res.status(400).json({
-         message:error,
+         message: error,
       });
    }
 });

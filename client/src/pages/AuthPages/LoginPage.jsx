@@ -54,7 +54,6 @@ function LoginPage() {
 
             dispatch(authActions.setUser(data.user));
             checkRole(data.user);
-            console.log('data', data)
          }
       } catch (error) {
          console.log("error");
@@ -67,7 +66,7 @@ function LoginPage() {
       if (user.role === ROLES.Candidate) {
          navigate("/");
       } else if (user.role === ROLES.Recruiter) {
-         navigate(`/company/${user.id}`);
+         navigate(`/company`);
       } else if (user.role === ROLES.Admin) {
          navigate("/admin");
       }

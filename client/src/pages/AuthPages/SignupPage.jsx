@@ -80,7 +80,7 @@ function SignupPage() {
       if (user.role === ROLES.Candidate) {
          navigate("/");
       } else if (user.role === ROLES.Recruiter) {
-         navigate(`/company/${user.id}`);
+         navigate(`/company`);
       } else if (user.role === ROLES.Admin) {
          navigate("/admin");
       }

@@ -3,7 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { EditorState } from "draft-js";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useGetCategoriesQuery } from "../../services/categoryService";
 import { useGetSkillsQuery } from "../../services/skillService";
@@ -22,7 +22,6 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 function JobCreatePage() {
    const navigate = useNavigate();
-   const { companyId } = useParams();
 
    const [editorState, setEditorState] = useState(EditorState.createEmpty());
    const [isLoading, setIsLoading] = useState(false);
@@ -57,23 +56,22 @@ function JobCreatePage() {
             return;
          }
 
-         const skills = values.skillsets.map((skill) => skill.label);
+         const skills = values.skillsets?.map((skill) => skill.label) || [];
 
          const jobData = {
             ...values,
             skillsets: skills,
-            location: location.label,
+            location: values.location.label,
             salary: {
-               ...values.salary,
-               frequency: values.salary.frequency.value || "",
-               currency: values.salary.currency.value || "",
+               ...values?.salary,
+               frequency: values.salary?.frequency?.value || "",
+               currency: values.salary?.currency?.value || "",
             },
          };
 
          const jobRes = await addJob({
             values: { ...jobData },
          });
-
 
          if (jobRes.error) {
             toast.error("Something went wrong", {
@@ -85,7 +83,7 @@ function JobCreatePage() {
 
          if (jobRes.data) {
             toast.success("Job added successfully");
-            navigate(`/company/${companyId}`);
+            navigate(`/company`);
          }
       } catch (error) {
          console.log("error", error);

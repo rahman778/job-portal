@@ -14,9 +14,8 @@ const baseQueryWithAuthHeaders = fetchBaseQuery({
    prepareHeaders: (headers) => {
       // this method should retrieve the token without a hook
       const token = getToken();
-
       if (token) {
-         headers.set("authorization", `Bearer ${JSON.parse(token)}`);
+         headers.set("authorization", `Bearer ${token}`);
       }
       return headers;
    },

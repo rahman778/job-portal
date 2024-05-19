@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Application = require("../../models/application");
 const Candidate = require("../../models/candidate");
+const Job = require("../../models/job");
 
 const auth = require("../../middleware/auth");
 const role = require("../../middleware/role");
@@ -95,6 +96,9 @@ router.post(
          });
 
          const savedApplication = await application.save();
+
+         // Increment the activeApplications count
+         await Job.findByIdAndUpdate(jobId, { $inc: { activeApplications: 1 } });
 
          res.status(200).json({
             success: true,
