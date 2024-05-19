@@ -5,8 +5,6 @@ import { useController } from "react-hook-form";
 
 import "react-international-phone/style.css";
 
-const requiredmarkerCls = `after:content-['*'] after:ml-0.5 after:text-red-500`;
-
 const PhoneInput = forwardRef(
    (
       {
@@ -32,7 +30,7 @@ const PhoneInput = forwardRef(
                <label
                   htmlFor="email"
                   className={`label inline-block mb-1 ${
-                     requiredMarker ? requiredmarkerCls : ""
+                     requiredMarker ? 'required-marker' : ""
                   }`}
                >
                   {labelText}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,7 @@ function LoginPage() {
    const [isLoading, setIsLoading] = useState(false);
    const [remember, setRemember] = useState(false);
 
-   const [signIn] = useSignInMutation();
+   const [signIn, { error: signInError }] = useSignInMutation();
 
    const {
       register,
@@ -30,29 +30,30 @@ function LoginPage() {
       formState: { errors },
    } = useForm({ mode: "onBlur" });
 
+   useEffect(() => {
+      if (signInError) {
+         toast.error(signInError.data.message || "Something went wrong", {
+            position: "top-right",
+         });
+      }
+   }, [signInError]);
+
    const onSubmit = async (values) => {
       const { email, password } = values;
 
       try {
          setIsLoading(true);
-         const res = await signIn({ email, password });
+         const { data } = await signIn({ email, password });
 
-         if (res.error) {
-            toast.error(res.error.data.message || "Something went wrong", {
-               position: "top-right",
-            });
-            return;
-         }
-
-         if (res.data.success) {
+         if (data.success) {
             if (remember) {
-               localStorage.setItem(ACCESS_TOKEN_NAME, res.data.accessToken);
+               localStorage.setItem(ACCESS_TOKEN_NAME, data.accessToken);
             } else {
-               sessionStorage.setItem(ACCESS_TOKEN_NAME, res.data.accessToken);
+               sessionStorage.setItem(ACCESS_TOKEN_NAME, data.accessToken);
             }
 
-            dispatch(authActions.setUser(res.data.user));
-            checkRole(res.data.user.role);
+            dispatch(authActions.setUser(data.user));
+            checkRole(data.user);
          }
       } catch (error) {
          console.log("error");
@@ -61,12 +62,12 @@ function LoginPage() {
       }
    };
 
-   const checkRole = (role) => {
-      if (role === ROLES.Candidate) {
+   const checkRole = (user) => {
+      if (user.role === ROLES.Candidate) {
          navigate("/");
-      } else if (role === ROLES.Recruiter) {
-         navigate("/company");
-      } else if (role === ROLES.Admin) {
+      } else if (user.role === ROLES.Recruiter) {
+         navigate(`/company`);
+      } else if (user.role === ROLES.Admin) {
          navigate("/admin");
       }
    };

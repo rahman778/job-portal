@@ -1,8 +1,5 @@
 import React from "react";
 
-const requiredmarkerCls =
-   `after:content-['*'] after:ml-0.5 after:text-red-500`;
-
 const Input = React.forwardRef(
    (
       {
@@ -23,7 +20,7 @@ const Input = React.forwardRef(
                <label
                   htmlFor="email"
                   className={`label inline-block mb-1 ${
-                     requiredMarker ? requiredmarkerCls : ""
+                     requiredMarker ? 'required-marker' : ""
                   }`}
                >
                   {labelText}

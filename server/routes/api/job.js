@@ -37,7 +37,7 @@ router.get("/list", async (req, res) => {
 
       if (sort === "salary") {
          sortOrder = {
-            maxSalary: -1,
+            "salary.maxSalary": -1,
          };
       } else {
          sortOrder = {
@@ -51,13 +51,13 @@ router.get("/list", async (req, res) => {
       }
 
       if (min_salary) {
-         filterQuery.minSalary = { $gte: parseInt(min_salary) };
-         filterQuery.salaryCurrency = salary_currency;
+         filterQuery["salary.minSalary"] = { $gte: parseInt(min_salary) };
+         filterQuery["salary.currency"] = salary_currency;
       }
 
       if (max_salary) {
-         filterQuery.maxSalary = { $lte: parseInt(max_salary) };
-         filterQuery.salaryCurrency = salary_currency;
+         filterQuery["salary.maxSalary"] = { $lte: parseInt(max_salary) };
+         filterQuery["salary.currency"] = salary_currency;
       }
 
       if (category) {
@@ -100,7 +100,13 @@ router.get("/list", async (req, res) => {
                user: {
                   user: 0,
                   isActive: 0,
+                  status: 0,
                },
+               description: 0,
+               isActive: 0,
+               isRemoved: 0,
+               acceptedCandidates: 0,
+               activeApplications: 0,
             },
          },
       ];
@@ -138,6 +144,27 @@ router.get("/list", async (req, res) => {
       console.log("error", error);
       res.status(400).json({
          error,
+      });
+   }
+});
+
+// fetch company jobs api
+router.get("/list/company", auth, async (req, res) => {
+   try {
+      const user = req.user._id;
+
+      const recruiterDoc = await Recruiter.findOne({ user });
+
+      const jobs = await Job.find({ user: recruiterDoc._id })
+         .select("title activeApplications isActive isRemoved deadline")
+         .sort("-created");
+
+      res.status(200).json({
+         jobs,
+      });
+   } catch (error) {
+      res.status(400).json({
+         error: "Your request could not be processed. Please try again.",
       });
    }
 });
@@ -229,16 +256,15 @@ router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, 
          maxApplicants,
          activeApplications,
          acceptedCandidates,
-         dateOfPosting,
          deadline,
          skillsets,
          jobType,
          modality,
+         experienceLevel,
          location,
-         minSalary,
-         maxSalary,
-         salaryCurrency,
+         salary,
          recruiterId,
+         category,
       } = req.body;
 
       let recruiter;
@@ -257,27 +283,26 @@ router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, 
          maxApplicants,
          activeApplications,
          acceptedCandidates,
-         dateOfPosting,
          deadline,
          skillsets,
          jobType,
          modality,
+         experienceLevel,
          location,
-         minSalary,
-         maxSalary,
-         salaryCurrency,
+         salary,
+         category,
       });
 
       const savedJob = await job.save();
 
-      res.status(200).json({
+      res.status(201).json({
          success: true,
          message: `Job has been added successfully!`,
          product: savedJob,
       });
    } catch (error) {
       res.status(400).json({
-         error,
+         message: error,
       });
    }
 });

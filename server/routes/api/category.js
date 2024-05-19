@@ -32,8 +32,23 @@ router.post("/add", auth, role.check(ROLES.Admin), async (req, res) => {
    }
 });
 
-// lise category api (with count)
+// list active category api (with count)
 router.get("/list", async (req, res) => {
+   try {
+      const category = await Category.find({});
+
+      res.status(200).json({
+         data: category,
+      });
+   } catch (error) {
+      res.status(400).json({
+         error: "Your request could not be processed. Please try again.",
+      });
+   }
+});
+
+// list count category api (with count)
+router.get("/count", async (req, res) => {
    try {
       const category = await Job.aggregate([
          {

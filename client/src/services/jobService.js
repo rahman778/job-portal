@@ -1,23 +1,41 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { publicBaseQuery } from "./baseQueries";
+import { baseQueryWithReauth } from "./baseQueries";
 
 export const jobAPI = createApi({
    reducerPath: "jobAPI",
-   baseQuery: publicBaseQuery,
+   baseQuery: baseQueryWithReauth,
    endpoints: (build) => ({
       getJobs: build.query({
          query: (filters) => ({
             url: `/api/job/list`,
-            params:filters
+            params: filters,
          }),
+      }),
+      getCompanyJobs: build.query({
+         query: () => ({
+            url: `/api/job/list/company`,
+         }),
+         transformResponse: (response) => response.jobs,
       }),
       getJobStats: build.query({
          query: (filters) => ({
             url: `/api/job/stats`,
-            params:filters
+            params: filters,
+         }),
+      }),
+      addJob: build.mutation({
+         query: ({ values }) => ({
+            url: `/api/job//add`,
+            method: "POST",
+            body: { ...values },
          }),
       }),
    }),
 });
 
-export const { useGetJobsQuery, useGetJobStatsQuery } = jobAPI;
+export const {
+   useGetJobsQuery,
+   useGetCompanyJobsQuery,
+   useGetJobStatsQuery,
+   useAddJobMutation,
+} = jobAPI;
