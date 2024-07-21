@@ -87,13 +87,13 @@ router.get("/me", auth, async (req, res) => {
          userDoc = await Candidate.findOne({ user }).populate({
             path: "user",
             model: "User",
-            select: "-password",
+            select: "-password -accountConfirmToken",
          });
       } else if (req.user.role === ROLES.Recruiter) {
          userDoc = await Recruiter.findOne({ user }).populate({
             path: "user",
             model: "User",
-            select: "-password",
+            select: "-password -accountConfirmToken",
          });
       } else {
          userDoc = await User.findById(user, { password: 0 });

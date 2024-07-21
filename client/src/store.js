@@ -6,6 +6,7 @@ import { authAPI } from "./services/authService";
 import { categoryAPI } from "./services/categoryService";
 import { jobAPI } from "./services/jobService";
 import { skillAPI } from "./services/skillService";
+import { userAPI } from "./services/userService";
 
 const combinedReducer = combineReducers({
    auth: authReducer,
@@ -13,6 +14,7 @@ const combinedReducer = combineReducers({
    [categoryAPI.reducerPath]: categoryAPI.reducer,
    [jobAPI.reducerPath]: jobAPI.reducer,
    [skillAPI.reducerPath]: skillAPI.reducer,
+   [userAPI.reducerPath]: userAPI.reducer,
    // ... add your reducers here
 });
 
@@ -32,6 +34,7 @@ export const store = configureStore({
          .concat(authAPI.middleware)
          .concat(categoryAPI.middleware)
          .concat(jobAPI.middleware)
-         .concat(skillAPI.middleware),
+         .concat(skillAPI.middleware)
+         .concat(userAPI.middleware),
    devTools: true,
 });

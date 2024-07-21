@@ -47,9 +47,9 @@ function LoginPage() {
 
          if (data.success) {
             if (remember) {
-               localStorage.setItem(ACCESS_TOKEN_NAME, data.accessToken);
+               localStorage.setItem(ACCESS_TOKEN_NAME,  JSON.stringify(data.accessToken));
             } else {
-               sessionStorage.setItem(ACCESS_TOKEN_NAME, data.accessToken);
+               sessionStorage.setItem(ACCESS_TOKEN_NAME,  JSON.stringify(data.accessToken));
             }
 
             dispatch(authActions.setUser(data.user));

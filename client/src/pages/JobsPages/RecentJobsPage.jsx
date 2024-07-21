@@ -7,8 +7,6 @@ function RecentJobsPage() {
       { refetchOnMountOrArgChange: true }
    );
 
-   console.log('jobs', jobs)
-
    return (
       <>
          {jobs?.data.map((job) => (
