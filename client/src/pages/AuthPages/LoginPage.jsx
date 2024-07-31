@@ -101,7 +101,7 @@ function LoginPage() {
                   {...register("password", {
                      required: "Please enter password.",
                      minLength: {
-                        value: 8,
+                        value: 6,
                         message:
                            "Password minimum length should be 8 characters",
                      },
