@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
-const Avatar = ({ children, top, right, size = "w-10 h-10" }) => {
+const Avatar = ({ children, profileData, top, right, size = "w-10 h-10" }) => {
    const avatarRef = useRef(null);
 
    const [isOpen, setIsOpen] = useState(false);
@@ -29,6 +29,9 @@ const Avatar = ({ children, top, right, size = "w-10 h-10" }) => {
       setIsOpen(!isOpen);
    };
 
+   const firstNameInitial = profileData?.user?.firstName?.charAt(0) || '';
+   const lastNameInitial = profileData?.user?.lastName?.charAt(0) || '';
+
    return (
       <div className="w-full" ref={avatarRef} onMouseDown={handleClickOutside}>
          <div
@@ -38,7 +41,7 @@ const Avatar = ({ children, top, right, size = "w-10 h-10" }) => {
             <div
                className={`rounded-full ${size}  flex items-center justify-center bg-amber-600/20 p-2.5`}
             >
-               <span className="font-medium text-md">AW</span>
+               <span className="font-medium text-md"> {`${firstNameInitial}${lastNameInitial}`}</span>
             </div>
             {children && (
                <div className="">

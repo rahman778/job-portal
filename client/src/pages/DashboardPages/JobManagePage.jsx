@@ -162,59 +162,44 @@ export default JobManagePage;
 const data = [
    {
       id: "1",
-      Task: "Create PR for the Task",
+      Task: "John Doe",
       Due_Date: "25-May-2021",
    },
    {
       id: "2",
-      Task: "Fix Styling",
+      Task: "Steve Smith",
       Due_Date: "26-May-2021",
    },
    {
       id: "3",
-      Task: "Handle Api Changes",
+      Task: "Joe Root",
       Due_Date: "27-May-2021",
    },
    {
       id: "4",
-      Task: "Blog on new features",
+      Task: "Johny Smith",
       Due_Date: "23-Aug-2021",
-   },
-   {
-      id: "5",
-      Task: "Call with Backend Team",
-      Due_Date: "05-Jan-2021",
-   },
-   {
-      id: "6",
-      Task: "Call with Backend Team",
-      Due_Date: "05-Jan-2021",
-   },
-   {
-      id: "7",
-      Task: "Call with Backend Team",
-      Due_Date: "05-Jan-2021",
    },
 ];
 
 const columnsFromBackend = {
    123: {
-      title: "To-do",
+      title: "Applied",
       items: data,
       color: "#656f7d",
    },
    456: {
-      title: "In Progress",
+      title: "Interview",
       items: [],
       color: "#0891b2",
    },
    789: {
-      title: "Done",
+      title: "Selected",
       items: [],
       color: "#7c3aed",
    },
    1000: {
-      title: "Test",
+      title: "Rejected",
       items: [],
       color: "#0d9488",
    },

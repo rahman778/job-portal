@@ -3,11 +3,13 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+import { useGetProfileQuery } from "../../services/userService";
 import { authActions } from "../../state/auth";
 
 import { BriefcaseIcon } from "@heroicons/react/24/outline";
 import DesktopNav from "./DesktopNav";
 import MobileNav from "./MobileNav";
+
 
 const routes = [
    {
@@ -26,6 +28,10 @@ const Nav = () => {
 
    const { isSignedIn } = useSelector((state) => state.auth);
 
+   const { data: profileData } = useGetProfileQuery();
+
+   console.log('profileData', profileData)
+
    const onLogout = () => {
       dispatch(authActions.logout());
       navigate(0);
@@ -38,6 +44,7 @@ const Nav = () => {
             setIsOpen={setIsOpen}
             isSignedIn={isSignedIn}
             onLogout={onLogout}
+            profileData={profileData}
          ></DesktopNav>
          <MobileNav
             routes={routes}
@@ -45,6 +52,7 @@ const Nav = () => {
             setIsOpen={setIsOpen}
             isSignedIn={isSignedIn}
             onLogout={onLogout}
+            profileData={profileData}
          ></MobileNav>
       </>
    );

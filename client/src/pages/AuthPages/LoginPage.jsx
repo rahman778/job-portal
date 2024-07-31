@@ -47,9 +47,9 @@ function LoginPage() {
 
          if (data.success) {
             if (remember) {
-               localStorage.setItem(ACCESS_TOKEN_NAME, data.accessToken);
+               localStorage.setItem(ACCESS_TOKEN_NAME,  JSON.stringify(data.accessToken));
             } else {
-               sessionStorage.setItem(ACCESS_TOKEN_NAME, data.accessToken);
+               sessionStorage.setItem(ACCESS_TOKEN_NAME,  JSON.stringify(data.accessToken));
             }
 
             dispatch(authActions.setUser(data.user));
@@ -101,7 +101,7 @@ function LoginPage() {
                   {...register("password", {
                      required: "Please enter password.",
                      minLength: {
-                        value: 8,
+                        value: 6,
                         message:
                            "Password minimum length should be 8 characters",
                      },

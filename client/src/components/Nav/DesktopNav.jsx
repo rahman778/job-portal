@@ -4,7 +4,7 @@ import ThemeButton from "../Buttons/ThemeButton";
 import Avatar from "../Core/Avatar";
 
 const DesktopNav = (props) => {
-   const { routes, setIsOpen, isSignedIn, onLogout } = props;
+   const { routes, setIsOpen, isSignedIn, onLogout, profileData } = props;
 
    const navigate = useNavigate();
 
@@ -39,7 +39,11 @@ const DesktopNav = (props) => {
                   <ThemeButton />
                   <div className="hidden lg:ml-2 lg:flex lg:items-center">
                      {isSignedIn ? (
-                        <Avatar top={"top-[60px]"} right={"right-[30px]"}>
+                        <Avatar
+                           top={"top-[60px]"}
+                           right={"right-[30px]"}
+                           profileData={profileData}
+                        >
                            <ul className="py-3  text-md min-w-28">
                               <li
                                  onClick={() => navigate("/profile")}

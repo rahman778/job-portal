@@ -277,7 +277,7 @@ router.post("/forgot-password", async (req, res) => {
 
 router.post("/reset-password/:token", async (req, res) => {
    try {
-      const {} = req.body;
+      const {password} = req.body;
 
       if (!password) {
          return res.status(400).json({ error: "You must enter a password." });
@@ -310,6 +310,7 @@ router.post("/reset-password/:token", async (req, res) => {
          message: "Password changed successfully. Please login with your new password.",
       });
    } catch (error) {
+      console.log('error', error)
       res.status(400).json({
          error: "Your request could not be processed. Please try again.",
       });
