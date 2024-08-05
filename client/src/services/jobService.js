@@ -25,7 +25,7 @@ export const jobAPI = createApi({
       }),
       addJob: build.mutation({
          query: ({ values }) => ({
-            url: `/api/job//add`,
+            url: `/api/job/add`,
             method: "POST",
             body: { ...values },
          }),

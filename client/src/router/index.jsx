@@ -14,6 +14,7 @@ import CompanyProfile from "../pages/ProfilePages/CompanyProfilePage";
 import JobsLayout from "../layout/JobsLayout";
 import SuggestedJobsPage from "../pages/JobsPages/SuggestedJobsPage.jsx";
 import SavedJobsPage from "../pages/JobsPages/SavedJobsPage.jsx";
+import VerifyPage from "../pages/AuthPages/VerifyPage.jsx";
 
 const router = createBrowserRouter([
    {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
    {
       path: "/signup",
       element: <SignupPage />,
+   },
+   {
+      path: "/verify/:token",
+      element: <VerifyPage />,
    },
 ]);
 

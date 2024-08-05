@@ -11,7 +11,7 @@ const User = require("../../models/user");
 const Candidate = require("../../models/candidate");
 const Recruiter = require("../../models/recruiter");
 
-const mailgun = require("../../services/mailgun");
+const mailer = require("../../services/nodemailer");
 const keys = require("../../config/keys");
 const { EMAIL_PROVIDER, ROLES, PASSWORD_REGEX } = require("../../constants");
 
@@ -140,7 +140,7 @@ router.post("/register", async (req, res) => {
          id: registeredUser.id,
       };
 
-      await mailgun.sendEmail(registeredUser.email, "signup", req.headers.host, registeredUser);
+      await mailer.sendEmail(registeredUser.email, "signup", req.headers.host, registeredUser);
 
       const accessToken = jwt.sign(payload, accessSecret, { expiresIn: accessTokenLife });
 
@@ -161,6 +161,7 @@ router.post("/register", async (req, res) => {
          },
       });
    } catch (error) {
+      console.log('error', error)
       res.status(400).json({ message: error });
    }
 });
@@ -226,7 +227,7 @@ router.post("/confirm-email/:token", async (req, res) => {
 
       confirmUser.save();
 
-      await mailgun.sendEmail(confirmUser.email, "email-confirmation");
+      await mailer.sendEmail(confirmUser.email, "email-confirmation");
 
       res.status(200).json({
          success: true,
@@ -261,7 +262,7 @@ router.post("/forgot-password", async (req, res) => {
 
       existingUser.save();
 
-      await mailgun.sendEmail(existingUser.email, "reset", req.headers.host, resetToken);
+      await mailer.sendEmail(existingUser.email, "reset", req.headers.host, resetToken);
 
       res.status(200).json({
          success: true,
@@ -303,7 +304,7 @@ router.post("/reset-password/:token", async (req, res) => {
 
       resetUser.save();
 
-      await mailgun.sendEmail(resetUser.email, "reset-confirmation");
+      await mailer.sendEmail(resetUser.email, "reset-confirmation");
 
       res.status(200).json({
          success: true,
@@ -346,7 +347,7 @@ router.post("/change-password", auth, async (req, res) => {
       existingUser.password = hash;
       existingUser.save();
 
-      await mailgun.sendEmail(existingUser.email, "reset-confirmation");
+      await mailer.sendEmail(existingUser.email, "reset-confirmation");
 
       res.status(200).json({
          success: true,

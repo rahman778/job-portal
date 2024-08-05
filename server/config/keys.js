@@ -30,4 +30,11 @@ module.exports = {
       region: process.env.AWS_REGION,
       bucketName: process.env.AWS_BUCKET_NAME,
    },
+   smtp: {
+      smtpHost: 'smtp.gmail.com',
+      smtpPort: 465, // or 465 for secure connection
+      smtpUser: 'abdul778.dev@gmail.com',
+      smtpPass: 'vbmu mudo ssst sikh',
+      sender: 'abdul778.dev@gmail.com'
+   }
 };

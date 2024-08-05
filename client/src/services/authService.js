@@ -19,7 +19,13 @@ export const authAPI = createApi({
             body: { ...values },
          }),
       }),
+      confirmEmail: builder.mutation({
+         query: (token) => ({
+            url: `/api/auth/confirm-email/${token}`,
+            method: "POST",
+         }),
+      }),
    }),
 });
 
-export const { useSignInMutation, useSignUpMutation } = authAPI;
+export const { useSignInMutation, useSignUpMutation, useConfirmEmailMutation } = authAPI;
