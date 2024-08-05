@@ -148,6 +148,36 @@ router.get("/list", async (req, res) => {
    }
 });
 
+router.get("/:jobId", auth, async (req, res) => {
+   try {
+      const jobId = req.params.jobId;
+      
+      const job = await Job.findOne({_id:jobId})
+      .populate({
+         path: 'user',
+         model: "Recruiter",
+         select: 'companyName' // Adjust fields as necessary
+      })
+      .populate({
+         path: 'category',
+         model: "Category",
+         select: 'name' // Adjust fields as necessary
+      });
+
+      console.log('job', job)
+
+      res.status(200).json({
+         data: job,
+      });
+   } catch (error) {
+      console.log('error', error)
+      res.status(400).json({
+         error,
+      });
+   }
+});
+
+
 // fetch company jobs api
 router.get("/list/company", auth, async (req, res) => {
    try {

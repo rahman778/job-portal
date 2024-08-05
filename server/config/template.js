@@ -50,7 +50,7 @@ exports.resetEmail = (host, resetToken) => {
       subject: 'Account Registration',
       text: `Hi ${data.firstName} ${data.lastName}! Thank you for creating an account with us!.\n\n` +
       'Please click on the following link, or paste this into your browser to confirm your email:\n\n' +
-      `http://${host}/verify/${data.accountConfirmToken}\n\n` +
+      `${host}/verify/${data.accountConfirmToken}\n\n` +
       `If you did not register, please ignore this email.\n`
     };
   

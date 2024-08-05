@@ -3,8 +3,16 @@ import IconLabel from "../../components/Core/IconLabel";
 import JobHeader from "../../components/Core/JobHeader";
 import Tags from "../../components/Core/Tags";
 import SaveButton from "../../components/Buttons/SaveButton";
+import { useParams } from "react-router-dom";
+import { useGetJobQuery } from "../../services/jobService";
 
 function JobDetailsPage() {
+   const { jobId } = useParams();
+
+   const { data: job } = useGetJobQuery({ jobId }, { skip: !jobId });
+
+   console.log('job', job)
+
    return (
       <section className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
          <div className="grid lg:grid-cols-12 grid-cols-1 gap-8 mt-4">

@@ -140,7 +140,7 @@ router.post("/register", async (req, res) => {
          id: registeredUser.id,
       };
 
-      await mailer.sendEmail(registeredUser.email, "signup", req.headers.host, registeredUser);
+      await mailer.sendEmail(registeredUser.email, "signup", req.headers.origin, registeredUser);
 
       const accessToken = jwt.sign(payload, accessSecret, { expiresIn: accessTokenLife });
 
@@ -229,9 +229,21 @@ router.post("/confirm-email/:token", async (req, res) => {
 
       await mailer.sendEmail(confirmUser.email, "email-confirmation");
 
+      const payload = {
+         id: confirmUser.id,
+      };
+
+      const accessToken = jwt.sign(payload, accessSecret, { expiresIn: accessTokenLife });
+      const refreshToken = jwt.sign(payload, refreshSecret, { expiresIn: refreshTokenLife });
+
+
       res.status(200).json({
          success: true,
          message: "Email confirmed",
+         user: confirmUser,
+         accessToken,
+         refreshToken
+         
       });
    } catch (error) {
       res.status(400).json({

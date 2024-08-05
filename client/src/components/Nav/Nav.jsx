@@ -30,8 +30,6 @@ const Nav = () => {
 
    const { data: profileData } = useGetProfileQuery();
 
-   console.log('profileData', profileData)
-
    const onLogout = () => {
       dispatch(authActions.logout());
       navigate(0);

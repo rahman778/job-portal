@@ -8,12 +8,22 @@ import SaveButton from "../Buttons/SaveButton";
 import IconLabel from "../Core/IconLabel";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import JobApplyModal from "../Modals/JobApplyModal";
+import { useGetJobQuery } from "../../services/jobService";
 
 const JobDrawer = () => {
    const [isOpen, setIsOpen] = useState(false);
    const [openJobApplyModal, setOpenJobApplyModal] = useState(false);
 
    let [searchParams] = useSearchParams();
+
+   const jobId = searchParams?.get("jobId");
+
+   const { data: job } = useGetJobQuery(
+      { jobId },
+      { skip: !jobId, refetchOnMountOrArgChange: true }
+   );
+
+   console.log("job", job);
 
    let type = searchParams?.get("nav_type");
 
@@ -30,26 +40,10 @@ const JobDrawer = () => {
          <div className="grid lg:grid-cols-12 grid-cols-1 gap-8 mt-4">
             <div className="lg:col-span-8">
                <JobHeader />
-               <p className="text-slate-700 dark:text-slate-300 text-md mt-6">
-                  One disadvantage of Lorum Ipsum is that in Latin certain
-                  letters appear more frequently than others - which creates a
-                  distinct visual impression. Moreover, in Latin only words at
-                  the beginning of sentences are capitalized.
-               </p>
-               <p className="text-slate-700 dark:text-slate-300 text-md mt-6">
-                  This means that Lorem Ipsum cannot accurately represent, for
-                  example, German, in which all nouns are capitalized. Thus,
-                  Lorem Ipsum has only limited suitability as a visual filler
-                  for German texts. If the fill text is intended to illustrate
-                  the characteristics of different typefaces.
-               </p>
-               <p className="text-slate-700 dark:text-slate-300 text-md mt-6">
-                  This means that Lorem Ipsum cannot accurately represent, for
-                  example, German, in which all nouns are capitalized. Thus,
-                  Lorem Ipsum has only limited suitability as a visual filler
-                  for German texts. If the fill text is intended to illustrate
-                  the characteristics of different typefaces.
-               </p>
+               <div
+                  className="text-slate-700 dark:text-slate-300 text-md mt-6"
+                  dangerouslySetInnerHTML={{ __html: job?.description }}
+               />
             </div>
             <div className="lg:col-span-4 ">
                <div className="sticky top-0">
@@ -60,17 +54,20 @@ const JobDrawer = () => {
                         </h6>
                      </div>
                      <div className="px-2">
-                        <IconLabel label="Employee Type" value="Full Time">
+                        <IconLabel label="Job Type" value={job?.jobType}>
                            <BookmarkIcon className="h-8 w-6 text-[#161C2D]" />
                         </IconLabel>
                      </div>
                      <div className="px-2">
-                        <IconLabel label="Employee Type" value="Full Time">
+                        <IconLabel label="Modality" value={job?.modality}>
                            <BookmarkIcon className="h-8 w-6 text-[#161C2D]" />
                         </IconLabel>
                      </div>
                      <div className="px-2">
-                        <IconLabel label="Employee Type" value="Full Time">
+                        <IconLabel
+                           label="Experience level"
+                           value={job?.experienceLevel}
+                        >
                            <BookmarkIcon className="h-8 w-6 text-[#161C2D]" />
                         </IconLabel>
                      </div>
@@ -82,9 +79,9 @@ const JobDrawer = () => {
                         </h6>
                      </div>
                      <div className="flex flex-wrap items-center gap-x-3 px-6 mt-5">
-                        <Tags name="React" />
-                        <Tags name="Javascript" />
-                        <Tags name="Laravel" />
+                        {job?.skillsets?.map((skill, idx) => (
+                           <Tags name={skill} key={idx} />
+                        ))}
                      </div>
                   </div>
                   <div className="flex items-center space-x-3 mt-6">

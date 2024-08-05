@@ -20,7 +20,7 @@ export const authAPI = createApi({
          }),
       }),
       confirmEmail: builder.mutation({
-         query: (token) => ({
+         query: ({token}) => ({
             url: `/api/auth/confirm-email/${token}`,
             method: "POST",
          }),

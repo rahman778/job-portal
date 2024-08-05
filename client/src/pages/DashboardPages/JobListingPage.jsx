@@ -7,6 +7,7 @@ import {
    PlusIcon,
 } from "@heroicons/react/24/outline";
 import { useGetCompanyJobsQuery } from "../../services/jobService";
+import { useGetProfileQuery } from "../../services/userService";
 
 function JobListingPage() {
    const navigate = useNavigate();
@@ -19,6 +20,10 @@ function JobListingPage() {
       { refetchOnMountOrArgChange: true, skip: !isSignedIn }
    );
 
+   const { data: profileData } = useGetProfileQuery({}, { skip: !isSignedIn});
+
+   console.log('profileData2', profileData)
+
    return (
       <section className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
          <div className="flex flex-wrap">
@@ -27,7 +32,7 @@ function JobListingPage() {
                   <div className="relative flex flex-col min-w-0 break-words border bg-clip-border rounded-sm border-slate-200 dark:border-slate-700">
                      <div className="p-2 xl:px-9 xl:pt-5  flex justify-between items-stretch flex-wrap min-h-[70px] pb-0 bg-transparent">
                         <h3 className="flex flex-col items-start justify-center m-2 ml-0 font-semibold text-xl/tight">
-                           All jobs from Virtusa
+                           {`All jobs from ${profileData?.companyName}`}
                         </h3>
                         <div className="relative flex flex-wrap items-center my-2">
                            <button
