@@ -8,6 +8,7 @@ function AsyncSelect({
    helperText,
    requiredMarker,
    placeholder,
+   value,
    ...rest
 }) {
    return (
@@ -25,6 +26,7 @@ function AsyncSelect({
             <Select
                cacheOptions
                placeholder={placeholder}
+               value={value}
                isMulti={isMulti}
                loadOptions={loadOptions}
                defaultOptions

@@ -39,7 +39,7 @@ function JobCreatePage() {
       { skip: !jobId, refetchOnMountOrArgChange: true }
    );
 
-   console.log('jobData', jobData)
+   console.log("jobData", jobData);
 
    const [addJob] = useAddJobMutation();
 
@@ -55,7 +55,20 @@ function JobCreatePage() {
 
    useEffect(() => {
       if (jobData) {
-         reset(jobData);
+         const data = {
+            ...jobData,
+            category: jobData.category._id,
+            skillsets: jobData.skillsets.map((skill) => ({
+               label: skill,
+               value: skill,
+            })),
+            location: {
+               label: jobData.location,
+               value: jobData.location,
+            },
+         };
+         reset(data);
+         setEditorState(EditorState.createWithContent(jobData.description));
       }
    }, [jobData, reset]);
 
@@ -470,7 +483,7 @@ function JobCreatePage() {
                         className="button primary-btn click-transition w-full max-w-md py-3"
                         disabled={isLoading}
                      >
-                        {isLoading ? <AnimateSpin /> : "submit"}
+                        {isLoading ? <AnimateSpin /> : jobId ? 'Update' : 'Submit'}
                      </button>
                   </div>
                </form>
