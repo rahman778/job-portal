@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { EditorState } from "draft-js";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useGetCategoriesQuery } from "../../services/categoryService";
 import { useGetSkillsQuery } from "../../services/skillService";
-import { useAddJobMutation } from "../../services/jobService";
+import { useAddJobMutation, useGetJobQuery } from "../../services/jobService";
 
 import currencies from "../../data/currency.json";
 
@@ -32,6 +32,15 @@ function JobCreatePage() {
       skip: skillSearchTerm === "" || skillSearchTerm.length < 1,
    });
 
+   const { jobId } = useParams();
+
+   const { data: jobData } = useGetJobQuery(
+      { jobId },
+      { skip: !jobId, refetchOnMountOrArgChange: true }
+   );
+
+   console.log('jobData', jobData)
+
    const [addJob] = useAddJobMutation();
 
    const {
@@ -40,8 +49,15 @@ function JobCreatePage() {
       control,
       setError,
       clearErrors,
+      reset,
       formState: { errors },
    } = useForm({ mode: "onBlur" });
+
+   useEffect(() => {
+      if (jobData) {
+         reset(jobData);
+      }
+   }, [jobData, reset]);
 
    const onSubmit = async (values) => {
       try {

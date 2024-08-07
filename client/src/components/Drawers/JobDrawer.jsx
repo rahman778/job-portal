@@ -39,7 +39,7 @@ const JobDrawer = () => {
       <Drawer isOpen={isOpen}>
          <div className="grid lg:grid-cols-12 grid-cols-1 gap-8 mt-4">
             <div className="lg:col-span-8">
-               <JobHeader />
+               <JobHeader title={job?.title} companyName={job?.user.companyName}/>
                <div
                   className="text-slate-700 dark:text-slate-300 text-md mt-6"
                   dangerouslySetInnerHTML={{ __html: job?.description }}

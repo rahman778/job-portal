@@ -60,6 +60,10 @@ const router = createBrowserRouter([
             element: <JobCreatePage />,
          },
          {
+            path: "company/:companyId/job/:jobId",
+            element: <JobCreatePage />,
+         },
+         {
             path: "company/job/manage",
             element: <JobManagePage />,
          },

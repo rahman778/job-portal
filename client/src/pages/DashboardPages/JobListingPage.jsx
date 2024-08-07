@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import {
@@ -11,7 +11,6 @@ import { useGetProfileQuery } from "../../services/userService";
 
 function JobListingPage() {
    const navigate = useNavigate();
-   const { companyId } = useParams();
 
    const { isSignedIn } = useSelector((state) => state.auth);
 
@@ -20,9 +19,9 @@ function JobListingPage() {
       { refetchOnMountOrArgChange: true, skip: !isSignedIn }
    );
 
-   const { data: profileData } = useGetProfileQuery({}, { skip: !isSignedIn});
+   const { data: profileData } = useGetProfileQuery({}, { skip: !isSignedIn });
 
-   console.log('profileData2', profileData)
+   console.log("profileData2", profileData);
 
    return (
       <section className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
@@ -37,7 +36,9 @@ function JobListingPage() {
                         <div className="relative flex flex-wrap items-center my-2">
                            <button
                               onClick={() =>
-                                 navigate(`/company/${companyId}/job/create`)
+                                 navigate(
+                                    `/company/${profileData._id}/job/create`
+                                 )
                               }
                               className="button secondary-btn flex items-center justify-center gap-x-2"
                            >
@@ -95,7 +96,14 @@ function JobListingPage() {
                                           <span className="">N/A</span>
                                        </td>
                                        <td className="text-end flex items-center justify-end h-[63px]">
-                                          <button className="rounded-full w-8 h-8 flex items-center justify-center bg-emerald-600/10 hover-transition hover:bg-emerald-600/30 mr-2">
+                                          <button
+                                             className="rounded-full w-8 h-8 flex items-center justify-center bg-emerald-600/10 hover-transition hover:bg-emerald-600/30 mr-2"
+                                             onClick={() =>
+                                                navigate(
+                                                   `/company/${profileData._id}/job/${job._id}`
+                                                )
+                                             }
+                                          >
                                              <PencilSquareIcon className="w-5 h-5 text-gray-600 dark:text-gray-300 click-transition" />
                                           </button>
                                           <button

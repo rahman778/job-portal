@@ -148,7 +148,7 @@ router.get("/list", async (req, res) => {
    }
 });
 
-router.get("/:jobId", auth, async (req, res) => {
+router.get("/:jobId", async (req, res) => {
    try {
       const jobId = req.params.jobId;
       
