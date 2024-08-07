@@ -4,6 +4,8 @@ import { EditorState } from "draft-js";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import { ContentState,convertFromHTML } from "draft-js";
+import htmlToDraft from 'html-to-draftjs';
 
 import { useGetCategoriesQuery } from "../../services/categoryService";
 import { useGetSkillsQuery } from "../../services/skillService";
@@ -68,7 +70,11 @@ function JobCreatePage() {
             },
          };
          reset(data);
-         setEditorState(EditorState.createWithContent(jobData.description));
+      
+          const blocksFromHtml = htmlToDraft(jobData.description);
+          const { contentBlocks, entityMap } = blocksFromHtml;
+          const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+          setEditorState(EditorState.createWithContent(contentState));
       }
    }, [jobData, reset]);
 
@@ -483,7 +489,13 @@ function JobCreatePage() {
                         className="button primary-btn click-transition w-full max-w-md py-3"
                         disabled={isLoading}
                      >
-                        {isLoading ? <AnimateSpin /> : jobId ? 'Update' : 'Submit'}
+                        {isLoading ? (
+                           <AnimateSpin />
+                        ) : jobId ? (
+                           "Update"
+                        ) : (
+                           "Submit"
+                        )}
                      </button>
                   </div>
                </form>
