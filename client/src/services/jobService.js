@@ -36,6 +36,13 @@ export const jobAPI = createApi({
             body: { ...values },
          }),
       }),
+      updateJob: build.mutation({
+         query: ({ values, jobId }) => ({
+            url: `/api/job/${jobId}`,
+            method: "PUT",
+            body: { ...values },
+         }),
+      }),
    }),
 });
 
@@ -45,4 +52,5 @@ export const {
    useGetCompanyJobsQuery,
    useGetJobStatsQuery,
    useAddJobMutation,
+   useUpdateJobMutation
 } = jobAPI;

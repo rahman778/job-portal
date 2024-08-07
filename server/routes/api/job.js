@@ -341,7 +341,7 @@ router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, 
 router.put("/:id", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, res) => {
    try {
       const jobId = req.params.id;
-      const update = req.body.job;
+      const update = req.body;
       const query = { _id: jobId };
 
       await Job.findOneAndUpdate(

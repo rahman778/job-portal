@@ -21,8 +21,6 @@ function JobListingPage() {
 
    const { data: profileData } = useGetProfileQuery({}, { skip: !isSignedIn });
 
-   console.log("profileData2", profileData);
-
    return (
       <section className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
          <div className="flex flex-wrap">

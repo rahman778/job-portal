@@ -4,12 +4,16 @@ import { EditorState } from "draft-js";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import { ContentState,convertFromHTML } from "draft-js";
-import htmlToDraft from 'html-to-draftjs';
+import { ContentState, convertFromHTML } from "draft-js";
+import htmlToDraft from "html-to-draftjs";
 
 import { useGetCategoriesQuery } from "../../services/categoryService";
 import { useGetSkillsQuery } from "../../services/skillService";
-import { useAddJobMutation, useGetJobQuery } from "../../services/jobService";
+import {
+   useAddJobMutation,
+   useGetJobQuery,
+   useUpdateJobMutation,
+} from "../../services/jobService";
 
 import currencies from "../../data/currency.json";
 
@@ -44,6 +48,7 @@ function JobCreatePage() {
    console.log("jobData", jobData);
 
    const [addJob] = useAddJobMutation();
+   const [updateJob] = useUpdateJobMutation();
 
    const {
       register,
@@ -70,11 +75,14 @@ function JobCreatePage() {
             },
          };
          reset(data);
-      
-          const blocksFromHtml = htmlToDraft(jobData.description);
-          const { contentBlocks, entityMap } = blocksFromHtml;
-          const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
-          setEditorState(EditorState.createWithContent(contentState));
+
+         const blocksFromHtml = htmlToDraft(jobData.description);
+         const { contentBlocks, entityMap } = blocksFromHtml;
+         const contentState = ContentState.createFromBlockArray(
+            contentBlocks,
+            entityMap
+         );
+         setEditorState(EditorState.createWithContent(contentState));
       }
    }, [jobData, reset]);
 
@@ -104,9 +112,18 @@ function JobCreatePage() {
             },
          };
 
-         const jobRes = await addJob({
-            values: { ...jobData },
-         });
+         let jobRes;
+
+         if (jobId) {
+            jobRes = await updateJob({
+               values: { ...jobData},
+               jobId: jobId
+            });
+         } else {
+            jobRes = await addJob({
+               values: { ...jobData },
+            });
+         }
 
          if (jobRes.error) {
             toast.error("Something went wrong", {
