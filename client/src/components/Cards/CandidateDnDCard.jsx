@@ -1,8 +1,18 @@
 import { ChatBubbleOvalLeftEllipsisIcon } from "@heroicons/react/24/outline";
 import { Draggable } from "react-beautiful-dnd";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import CommentModal from "../Modals/CommentModal";
+import { useState } from "react";
+import { useGetCommentsQuery } from "../../services/commentService";
 
-const CandidateCard = ({ item, index, onClick }) => {
+dayjs.extend(relativeTime);
+
+const CandidateCard = ({ item, index }) => {
+   const [commentModalOpen, setCommentModalpen] = useState(false);
+   const { data: comments, refetch } = useGetCommentsQuery(item.id, { skip: !item.id });
    return (
+      <>
       <Draggable key={item.id} draggableId={item.id} index={index}>
          {(provided, snapshot) => (
             <div
@@ -17,16 +27,16 @@ const CandidateCard = ({ item, index, onClick }) => {
             >
                <div
                   className="flex flex-col justify-center items-start text-md"
-                  onClick={onClick}
+                  onClick={() => setCommentModalpen(true)}
                >
-                  <p className="font-medium">{item.Task}</p>
+                  <p className="font-medium">{item.name}</p>
                   <div className="flex justify-between w-full text-sm  mt-2">
                      <span className="text-gray-700 dark:text-gray-300">
-                        55 min ago
+                     {dayjs(item.applicationDate).fromNow()}
                      </span>
                      <span className="flex gap-x-1 items-center">
                         <span className="mr-1 mt-0.5 text-gray-700 dark:text-gray-300">
-                           5
+                              {comments?.length}
                         </span>
                         <ChatBubbleOvalLeftEllipsisIcon className="text-gray-700 dark:text-gray-300 h-4 w-4" />
                      </span>
@@ -35,6 +45,8 @@ const CandidateCard = ({ item, index, onClick }) => {
             </div>
          )}
       </Draggable>
+      <CommentModal open={commentModalOpen} setOpen={setCommentModalpen} comments={comments} data={item} onSuccess={() => refetch()}/>
+      </>
    );
 };
 

@@ -1,10 +1,10 @@
 import IconText from "./IconText";
 import { BuildingOfficeIcon } from "@heroicons/react/24/outline";
 
-const JobHeader = ({title, companyName}) => {
+const JobHeader = ({title, companyName, logo}) => {
    return (
       <div className="flex items-center w-full space-x-6 bg-white dark:bg-mediumGrey p-6 shadow-md rounded-md">
-         <img alt="Logo" className="logo" width="65" height="65" />
+         <img alt="Logo" src={logo ?? "https://placehold.co/600x400/000000/FFF"} className="logo" width="65" height="65" />
          <div>
             <div className="text-xl font-medium text-stone-800 dark:text-stone-300">
                {title}

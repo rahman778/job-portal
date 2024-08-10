@@ -11,8 +11,6 @@ function JobDetailsPage() {
 
    const { data: job } = useGetJobQuery({ jobId }, { skip: !jobId });
 
-   console.log('job', job)
-
    return (
       <section className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
          <div className="grid lg:grid-cols-12 grid-cols-1 gap-8 mt-4">
@@ -79,7 +77,7 @@ function JobDetailsPage() {
                      <button className="button primary-btn">
                         Apply for job
                      </button>
-                     <SaveButton size="w-7 h-7" />
+                     <SaveButton size="size-7" />
                   </div>
                </div>
             </div>

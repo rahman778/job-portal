@@ -119,6 +119,19 @@ exports.getJobsMatchingQuery = (candidate) => {
          },
       },
 
+      {
+         $lookup: {
+           from: 'recruiters',  // The collection name for Recruiter
+           localField: 'user',
+           foreignField: '_id',
+           as: 'company',
+         },
+       },
+
+       {
+         $unwind: '$company',  // Optionally use $unwind to deconstruct the array
+       },
+
       // Sort by total score in descending order
       { $sort: { totalScore: -1 } },
 

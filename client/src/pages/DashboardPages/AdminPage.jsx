@@ -1,25 +1,36 @@
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-
 import {
   ChevronRightIcon,
   PencilSquareIcon,
-  PlusIcon,
 } from "@heroicons/react/24/outline";
-import { useGetCompanyJobsQuery } from "../../services/jobService";
-import { useGetProfileQuery } from "../../services/userService";
+import {} from "react-redux";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useGetJobsQuery } from "../../services/jobService";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import ReportDocument from "../../components/Report/JobReport";
 
-function JobListingPage() {
-  const navigate = useNavigate();
+function AdminPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const { isSignedIn } = useSelector((state) => state.auth);
-
-  const { data: jobs } = useGetCompanyJobsQuery(
-    {},
-    { refetchOnMountOrArgChange: true, skip: !isSignedIn }
+  const { data: jobs } = useGetJobsQuery(
+    searchParams.toString().replace(/%2C/g, ","),
+    { refetchOnMountOrArgChange: true }
   );
 
-  const { data: profileData } = useGetProfileQuery({}, { skip: !isSignedIn });
+  const navigate = useNavigate();
+
+  const handleFilterChange = (key, value) => {
+    setSearchParams((prevParams) => {
+      let searchVal = prevParams.get(key);
+
+      prevParams.set(key, value);
+
+      if (searchVal === value) {
+        prevParams.delete(key);
+      }
+
+      return prevParams;
+    });
+  };
 
   return (
     <section className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
@@ -27,25 +38,59 @@ function JobListingPage() {
         <div className="w-full max-w-full px-3 mb-6 mx-auto">
           <div className="relative flex-[1_auto] flex flex-col break-words min-w-0 bg-clip-border rounded-sm">
             <div className="relative flex flex-col min-w-0 break-words border bg-clip-border rounded-sm border-slate-200 dark:border-slate-700">
-              <div className="p-2 xl:px-9 xl:pt-5  flex justify-between items-stretch flex-wrap min-h-[70px] pb-0 bg-transparent">
-                <h3 className="flex flex-col items-start justify-center m-2 ml-0 font-semibold text-xl/tight">
-                  {`All jobs from ${profileData?.companyName}`}
-                </h3>
-                <div className="relative flex flex-wrap items-center my-2">
-                  <button
-                    onClick={() =>
-                      navigate(`/company/${profileData._id}/job/create`)
-                    }
-                    className="button secondary-btn flex items-center justify-center gap-x-2"
-                  >
-                    <span>Post a job</span>
-                    <PlusIcon className="w-4 h-4 stroke-2" />
-                  </button>
-                </div>
-              </div>
-
               <div className="flex-auto block p-2 xl:pb-2 xl:pt-6 xl:px-9">
-                <div className="overflow-x-auto">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-row items-center gap-x-4">
+                    <div>
+                      <label htmlFor="startDate" className="label">
+                        Start Date
+                      </label>
+                      <input
+                        type="date"
+                        name="startDate"
+                        value={searchParams.get("startDate") || ""}
+                        className="input"
+                        onChange={(e) =>
+                          handleFilterChange("startDate", e.target.value)
+                        }
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="startDate" className="label">
+                        End Date
+                      </label>
+                      <input
+                        type="date"
+                        value={searchParams.get("endDate") || ""}
+                        className="input"
+                        onChange={(e) =>
+                          handleFilterChange("endDate", e.target.value)
+                        }
+                      />
+                    </div>
+
+                    <Link
+                      to={`/dashboard`}
+                      className="text-sm font-medium text-emerald-600 hover:text-emerald-500 cursor-pointer"
+                    >
+                      Clear Filters
+                    </Link>
+                  </div>
+                  <div className="">
+                    <PDFDownloadLink
+                      document={<ReportDocument jobs={jobs?.data} />}
+                      fileName="job_report.pdf"
+                      className="button primary-outline-btn py-2 px-3"
+                    >
+                      {({ blob, url, loading, error }) =>
+                        loading ? "Generating report..." : "Download Report"
+                      }
+                    </PDFDownloadLink>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto mt-10">
                   <table className="w-full my-0 align-middle">
                     <thead className="align-bottom border-b border-slate-200 dark:border-slate-700">
                       <tr>
@@ -53,21 +98,22 @@ function JobListingPage() {
                           TITLE
                         </th>
                         <th className="pb-3 text-center min-w-[100px] font-medium">
+                          Company
+                        </th>
+                        <th className="pb-3 text-center min-w-[100px] font-medium">
                           APPLICATIONS
                         </th>
                         <th className="pb-3 text-start min-w-[100px] font-medium">
-                          STATUS
-                        </th>
-                        <th className="pb-3 text-center min-w-[100px] font-medium">
                           PUBLISHED DATE
                         </th>
+
                         <th className="pb-3 text-end min-w-[60px] font-medium">
                           DETAILS
                         </th>
                       </tr>
                     </thead>
                     <tbody>
-                      {jobs?.map((job) => (
+                      {jobs?.data.map((job) => (
                         <tr
                           key={job._id}
                           className="border-b last:border-b-0 border-slate-200 dark:border-slate-700 text-md"
@@ -78,21 +124,22 @@ function JobListingPage() {
                             </div>
                           </td>
                           <td className="text-center">
+                            <span className="">{job.company.companyName}</span>
+                          </td>
+                          <td className="text-center">
                             <span>{job.activeApplications}</span>
                           </td>
 
                           <td className="text-left">
-                            <span>{job.isActive ? "Active" : "Inactive"}</span>
+                            <span>{job?.created.split("T")[0]}</span>
                           </td>
-                          <td className="text-center">
-                            <span className="">{job?.created.split("T")[0]}</span>
-                          </td>
+
                           <td className="text-end flex items-center justify-end h-[63px]">
                             <button
                               className="rounded-full w-8 h-8 flex items-center justify-center bg-emerald-600/10 hover-transition hover:bg-emerald-600/30 mr-2"
                               onClick={() =>
                                 navigate(
-                                  `/company/${profileData._id}/job/${job._id}`
+                                  `/company/${job.company._id}/job/${job._id}`
                                 )
                               }
                             >
@@ -121,4 +168,4 @@ function JobListingPage() {
   );
 }
 
-export default JobListingPage;
+export default AdminPage;

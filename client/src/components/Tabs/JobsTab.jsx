@@ -1,6 +1,15 @@
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useGetWatchlistJobsQuery } from "../../services/watchlistService";
 
 function JobsTab() {
+   const { isSignedIn } = useSelector((state) => state.auth);
+
+   const { data: likedJobs } = useGetWatchlistJobsQuery(
+      {},
+      { skip: !isSignedIn }
+    );
+
    const classes =
       "relative flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-gray-700 click-transition";
    return (
@@ -42,7 +51,7 @@ function JobsTab() {
                   Saved Jobs
                   <span className="rounded-full bg-emerald-600/20 text-primary px-2 py-0.5 text-xs font-semibold">
                      {" "}
-                     8
+                     {likedJobs?.length}
                   </span>
                </NavLink>
             </li>

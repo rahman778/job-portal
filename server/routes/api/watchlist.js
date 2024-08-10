@@ -63,12 +63,52 @@ router.get("/", auth, async (req, res) => {
 
       const candidateDoc = await Candidate.findOne({ user });
 
-      const watchlist = await Watchlist.find({ user: candidateDoc._id, isLiked: true })
-         .populate({
-            path: "job",
-            select: "title description",
-         })
-         .sort("-updated");
+      // const watchlist = await Watchlist.find({ user: candidateDoc._id, isLiked: true })
+      //    .populate({
+      //       path: "job",
+      //       model: "Job",
+      //       populate: {
+      //          path: "user",
+      //          model: "Recruiter",
+      //          select: "companyName logo",
+      //          as: "company"
+      //       },
+      //    })
+      //    .sort("-updated");
+
+      const watchlist = await Watchlist.aggregate([
+         { $match: { user: candidateDoc._id, isLiked: true } },
+         // Lookup to join the Job collection with the Watchlist
+         {
+            $lookup: {
+               from: "jobs", // Collection to join (usually pluralized version of your model name)
+               localField: "job", // Field in the Watchlist document
+               foreignField: "_id", // Field in the Job document
+               as: "job", // Name of the new array field containing the matched documents
+            },
+         },
+
+         // Unwind the job array
+         { $unwind: "$job" },
+
+         // Lookup to join the Recruiter collection with the Job
+         {
+            $lookup: {
+               from: "recruiters", // Collection to join (Recruiters)
+               localField: "job.user", // Field in the Job document
+               foreignField: "_id", // Field in the Recruiter document
+               as: "job.company", // Name of the new array field containing the matched documents
+            },
+         },
+
+         // Unwind the company array
+         { $unwind: "$job.company" },
+
+         // Project to remove the original user field and rename 'company' as necessary
+        
+         // Sort by the updated field
+         { $sort: { updated: -1 } },
+      ]);
 
       res.status(200).json({
          watchlist,

@@ -25,7 +25,7 @@ const JobViewFilter = ({ searchEntries, handleRemoveQuery, limit = 10 }) => {
       .flat();
 
    const getCategoryName = (id) => {
-      return categories?.find((c) => c._id === id).name;
+      return categories?.find((c) => c._id === id)?.name;
    };
 
    const getLabel = (key, val) => {

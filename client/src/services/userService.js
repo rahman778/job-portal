@@ -15,13 +15,22 @@ export const userAPI = createApi({
 
       updateUser: build.mutation({
          query: ({ values }) => ({
-            url: `/api/user/me`,
+            url: `/api/user`,
             method: "PUT",
             body: { ...values },
+         }),
+         invalidates: ["Auth"],
+      }),
+
+      updateProfile: build.mutation({
+         query: ({ values }) => ({
+            url: `/api/user/profile`,
+            method: "PUT",
+            body: values,
          }),
          invalidates: ["Auth"],
       }),
    }),
 });
 
-export const { useGetProfileQuery, useUpdateUserMutation } = userAPI;
+export const { useGetProfileQuery, useUpdateUserMutation, useUpdateProfileMutation } = userAPI;

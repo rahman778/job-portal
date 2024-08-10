@@ -8,6 +8,8 @@ const Job = require("../../models/job");
 const auth = require("../../middleware/auth");
 const role = require("../../middleware/role");
 
+const mailer = require("../../services/nodemailer");
+
 const upload = require("../../utils/storage");
 
 const { ROLES } = require("../../constants");
@@ -84,7 +86,11 @@ router.post(
 
          const jobId = req.params.jobId;
 
-         const candidateDoc = await Candidate.findOne({ user: req.user._id });
+         const candidateDoc = await Candidate.findOne({ user: req.user._id }).populate({
+            path: "user",
+            model: "User",
+            select: "-password -accountConfirmToken",
+         });
 
          let resume = req.file ? req.file.location : resumeLink;
 
@@ -97,8 +103,29 @@ router.post(
 
          const savedApplication = await application.save();
 
+         const jobData = await Job.findOne({ _id: savedApplication.job }).populate({
+            path: "user",
+            model: "Recruiter",
+            select: "companyName",
+         });
+
          // Increment the activeApplications count
          await Job.findByIdAndUpdate(jobId, { $inc: { activeApplications: 1 } });
+
+         const emailData = {
+            firstName: candidateDoc.user.firstName,
+            lastName: candidateDoc.user.lastName,
+            jobTitle: jobData.title,
+            company: jobData.user.companyName,
+            type: 'Screening',
+         };
+   
+         const emailRes = await mailer.sendEmail(
+            candidateDoc.user.email,
+            "application-status",
+            req.headers.origin,
+            emailData
+         );
 
          res.status(200).json({
             success: true,
@@ -116,7 +143,7 @@ router.post(
 //update application status
 router.put("/:applicationId", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, res) => {
    try {
-      const status = req.query.status;
+      const status = req.body.status;
       const applicationId = req.params.applicationId;
       const query = { _id: applicationId };
 
@@ -126,6 +153,33 @@ router.put("/:applicationId", auth, role.check(ROLES.Admin, ROLES.Recruiter), as
          {
             new: true,
          }
+      );
+
+      const candidateDoc = await Candidate.findOne({ _id: application.applicant }).populate({
+         path: "user",
+         model: "User",
+         select: "-password -accountConfirmToken",
+      });
+
+      const jobData = await Job.findOne({ _id: application.job }).populate({
+         path: "user",
+         model: "Recruiter",
+         select: "companyName",
+      });
+
+      const emailData = {
+         firstName: candidateDoc.user.firstName,
+         lastName: candidateDoc.user.lastName,
+         jobTitle: jobData.title,
+         company: jobData.user.companyName,
+         type: status,
+      };
+
+      const emailRes = await mailer.sendEmail(
+         candidateDoc.user.email,
+         "application-status",
+         req.headers.origin,
+         emailData
       );
 
       res.status(200).json({

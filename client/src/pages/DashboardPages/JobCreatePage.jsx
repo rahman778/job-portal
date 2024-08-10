@@ -4,7 +4,7 @@ import { EditorState } from "draft-js";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import { ContentState, convertFromHTML } from "draft-js";
+import { ContentState } from "draft-js";
 import htmlToDraft from "html-to-draftjs";
 
 import { useGetCategoriesQuery } from "../../services/categoryService";
@@ -45,8 +45,6 @@ function JobCreatePage() {
       { skip: !jobId, refetchOnMountOrArgChange: true }
    );
 
-   console.log("jobData", jobData);
-
    const [addJob] = useAddJobMutation();
    const [updateJob] = useUpdateJobMutation();
 
@@ -64,14 +62,14 @@ function JobCreatePage() {
       if (jobData) {
          const data = {
             ...jobData,
-            category: jobData.category._id,
-            skillsets: jobData.skillsets.map((skill) => ({
+            category: jobData?.category?._id,
+            skillsets: jobData?.skillsets.map((skill) => ({
                label: skill,
                value: skill,
             })),
             location: {
-               label: jobData.location,
-               value: jobData.location,
+               label: jobData?.location,
+               value: jobData?.location,
             },
          };
          reset(data);
@@ -150,7 +148,7 @@ function JobCreatePage() {
       if (skills) {
          callback(
             skills.map((skill) => ({
-               value: skill._id,
+               value: skill?._id,
                label: skill.name,
             }))
          );
@@ -164,7 +162,7 @@ function JobCreatePage() {
          <div className="max-w-6xl xl:max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 pt-5 pb-16">
             <BackButton />
             <h1 className="text-center font-medium text-3xl text-darkGreen dark:text-ligherGreen">
-               Post a New Job
+              {jobId ? "Update Job" : "Post a New Job"} 
             </h1>
             <div className="max-w-5xl bg-white dark:bg-darkGrey mx-auto p-2 lg:py-6 lg:px-10 rounded-lg mt-5">
                <form onSubmit={handleSubmit(onSubmit)}>

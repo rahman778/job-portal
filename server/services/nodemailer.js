@@ -69,6 +69,12 @@ const prepareTemplate = (type, host, data) => {
       case 'contact':
         message = template.contactEmail();
         break;
+      case 'application-status':
+        if(data.type === 'Screening') return message = template.screeningEmail(data);
+        if(data.type === 'Shortlisted') return message = template.shortlistedEmail(data);
+        if(data.type === 'Interview') return message = template.interviewEmail(data);
+        if(data.type === 'Rejected') return message = template.rejectedEmail(data);
+        break;
   
       default:
         message = '';

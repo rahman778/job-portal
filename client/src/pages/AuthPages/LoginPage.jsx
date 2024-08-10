@@ -68,7 +68,7 @@ function LoginPage() {
       } else if (user.role === ROLES.Recruiter) {
          navigate(`/company`);
       } else if (user.role === ROLES.Admin) {
-         navigate("/admin");
+         navigate("/dashboard");
       }
    };
 

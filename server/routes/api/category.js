@@ -51,6 +51,7 @@ router.get("/list", async (req, res) => {
 router.get("/count", async (req, res) => {
    try {
       const category = await Job.aggregate([
+         { $match: { isActive: true, isRemoved: false } },
          {
             $lookup: {
                from: "categories",

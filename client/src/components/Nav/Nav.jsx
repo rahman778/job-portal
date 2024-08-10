@@ -15,7 +15,7 @@ const routes = [
    {
       id: 1,
       label: "job",
-      path: "/job",
+      path: "/recent-jobs",
       icon: <BriefcaseIcon className="h-5 w-5 text-primary flex-shrink" />,
    },
 ];
@@ -28,7 +28,7 @@ const Nav = () => {
 
    const { isSignedIn } = useSelector((state) => state.auth);
 
-   const { data: profileData } = useGetProfileQuery();
+   const { data: profileData } = useGetProfileQuery({}, {skip: !isSignedIn});
 
    const onLogout = () => {
       dispatch(authActions.logout());

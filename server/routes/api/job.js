@@ -26,6 +26,8 @@ router.get("/list", async (req, res) => {
          date_posted,
          page = 1,
          limit = 10,
+         startDate, 
+         endDate
       } = req.query;
 
       let filterQuery = {
@@ -61,7 +63,7 @@ router.get("/list", async (req, res) => {
       }
 
       if (category) {
-         var catId = new ObjectId(category);
+         let catId = new ObjectId(category);
          filterQuery.category = catId;
       }
 
@@ -84,6 +86,14 @@ router.get("/list", async (req, res) => {
          filterQuery.created = { $gte: new Date(Date.now() - date_posted * 24 * 60 * 60 * 1000) };
       }
 
+      if(startDate) {
+         filterQuery.created = { $gte: new Date(startDate) };
+      }
+
+      if(endDate) {
+         filterQuery.created = { $lte: new Date(endDate) };
+      }
+
       const pipeline = [
          { $match: filterQuery },
          {
@@ -91,13 +101,13 @@ router.get("/list", async (req, res) => {
                from: "recruiters",
                localField: "user",
                foreignField: "_id",
-               as: "user",
+               as: "company",
             },
          },
-         { $unwind: "$user" },
+         { $unwind: "$company" },
          {
             $project: {
-               user: {
+               company: {
                   user: 0,
                   isActive: 0,
                   status: 0,
@@ -106,7 +116,6 @@ router.get("/list", async (req, res) => {
                isActive: 0,
                isRemoved: 0,
                acceptedCandidates: 0,
-               activeApplications: 0,
             },
          },
       ];
@@ -148,23 +157,23 @@ router.get("/list", async (req, res) => {
    }
 });
 
-router.get("/:jobId", async (req, res) => {
+router.get("/detail/:jobId", async (req, res) => {
    try {
       const jobId = req.params.jobId;
+
+   
       
       const job = await Job.findOne({_id:jobId})
       .populate({
          path: 'user',
          model: "Recruiter",
-         select: 'companyName' // Adjust fields as necessary
+         select: 'companyName logo' 
       })
       .populate({
          path: 'category',
          model: "Category",
-         select: 'name' // Adjust fields as necessary
+         select: 'name' 
       });
-
-      console.log('job', job)
 
       res.status(200).json({
          data: job,
@@ -185,8 +194,8 @@ router.get("/list/company", auth, async (req, res) => {
 
       const recruiterDoc = await Recruiter.findOne({ user });
 
-      const jobs = await Job.find({ user: recruiterDoc._id })
-         .select("title activeApplications isActive isRemoved deadline")
+      const jobs = await Job.find({ user: recruiterDoc._id, isRemoved: false})
+         .select("title activeApplications isActive isRemoved deadline created")
          .sort("-created");
 
       res.status(200).json({
@@ -209,63 +218,64 @@ router.get("/stats", async (req, res) => {
       const queryRegex = new RegExp(query, "i");
       filterQuery.$or = [{ title: queryRegex }, { skillsets: { $in: [queryRegex] } }];
    }
+   
 
    if (category) {
-      var catId = new ObjectId(category);
+      let catId = new ObjectId(category);
       filterQuery.category = catId;
    }
 
    try {
-      const jobTypes = await Job.aggregate([
-         { $match: { isActive: true, isRemoved: false, ...filterQuery } },
-         {
-            $group: {
-               _id: "$jobType",
-               count: { $sum: 1 },
-            },
-         },
-         {
-            $project: {
-               label: "$_id",
-               count: 1,
-               _id: 0,
-            },
-         },
-      ]);
-
-      const modality = await Job.aggregate([
-         { $match: { isActive: true, isRemoved: false, ...filterQuery } },
-         {
-            $group: {
-               _id: "$modality",
-               count: { $sum: 1 },
-            },
-         },
-         {
-            $project: {
-               label: "$_id",
-               count: 1,
-               _id: 0,
-            },
-         },
-      ]);
-
-      const experienceLevel = await Job.aggregate([
-         { $match: { isActive: true, isRemoved: false, ...filterQuery } },
-         {
-            $group: {
-               _id: "$experienceLevel",
-               count: { $sum: 1 },
-            },
-         },
-         {
-            $project: {
-               label: "$_id",
-               count: 1,
-               _id: 0,
-            },
-         },
-      ]);
+      const [jobTypes, modality, experienceLevel] = await Promise.all([
+         Job.aggregate([
+             { $match: { isActive: true, isRemoved: false, ...filterQuery } },
+             {
+                 $group: {
+                     _id: "$jobType",
+                     count: { $sum: 1 },
+                 },
+             },
+             {
+                 $project: {
+                     label: "$_id",
+                     count: 1,
+                     _id: 0,
+                 },
+             },
+         ]),
+         Job.aggregate([
+             { $match: { isActive: true, isRemoved: false, ...filterQuery } },
+             {
+                 $group: {
+                     _id: "$modality",
+                     count: { $sum: 1 },
+                 },
+             },
+             {
+                 $project: {
+                     label: "$_id",
+                     count: 1,
+                     _id: 0,
+                 },
+             },
+         ]),
+         Job.aggregate([
+             { $match: { isActive: true, isRemoved: false, ...filterQuery } },
+             {
+                 $group: {
+                     _id: "$experienceLevel",
+                     count: { $sum: 1 },
+                 },
+             },
+             {
+                 $project: {
+                     label: "$_id",
+                     count: 1,
+                     _id: 0,
+                 },
+             },
+         ])
+     ]);
 
       res.status(200).json({
          data: { jobTypes, modality, experienceLevel },
@@ -276,6 +286,7 @@ router.get("/stats", async (req, res) => {
       });
    }
 });
+
 
 //add new jobs
 router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, res) => {

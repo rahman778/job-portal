@@ -8,7 +8,7 @@ import { useUpdateUserMutation } from "../../services/userService";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
 
-const ProfileEditModal = ({ open, setOpen, successCb, profileData }) => {
+const CompanyEditModal = ({ open, setOpen, successCb, profileData }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [udpateProfile] = useUpdateUserMutation();
@@ -22,7 +22,7 @@ const ProfileEditModal = ({ open, setOpen, successCb, profileData }) => {
   } = useForm({ mode: "onBlur" });
 
   useEffect(() => {
-    reset(profileData);
+    reset({ companyName: profileData?.companyName, ...profileData?.user });
   }, [profileData, reset]);
 
   const onSubmit = async (values) => {
@@ -38,7 +38,7 @@ const ProfileEditModal = ({ open, setOpen, successCb, profileData }) => {
 
       if (data.success) {
         toast.success("Profile updated successfully 🔓");
-        successCb()
+        successCb();
       }
     } catch (error) {
       console.log("error", error);
@@ -59,26 +59,16 @@ const ProfileEditModal = ({ open, setOpen, successCb, profileData }) => {
           >
             <div>
               <Input
-                {...register("firstName", {
-                  required: "Please enter first name",
+                {...register("companyName", {
+                  required: "Please enter company name",
                 })}
-                name="firstName"
-                placeholder="Type your first name"
-                labelText="First Name"
-                error={errors.firstName ? true : false}
-                helperText={errors.firstName ? errors.firstName.message : null}
-              />
-            </div>
-            <div>
-              <Input
-                {...register("lastName", {
-                  required: "Please enter last name",
-                })}
-                name="lastName"
-                placeholder="Type your last name"
-                labelText="Last Name"
-                error={errors.lastName ? true : false}
-                helperText={errors.lastName ? errors.lastName.message : null}
+                name="companyName"
+                placeholder="Type your company name"
+                labelText="Company Name"
+                error={errors.companyName ? true : false}
+                helperText={
+                  errors.companyName ? errors.companyName.message : null
+                }
               />
             </div>
             <div>
@@ -116,4 +106,4 @@ const ProfileEditModal = ({ open, setOpen, successCb, profileData }) => {
   );
 };
 
-export default ProfileEditModal;
+export default CompanyEditModal;

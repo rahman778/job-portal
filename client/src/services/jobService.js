@@ -13,7 +13,7 @@ export const jobAPI = createApi({
       }),
       getJob: build.query({
          query: ({ jobId }) => ({
-            url: `/api/job/${jobId}`,
+            url: `/api/job/detail/${jobId}`,
          }),
          transformResponse: (response) => response.data,
       }),
@@ -43,6 +43,12 @@ export const jobAPI = createApi({
             body: { ...values },
          }),
       }),
+      deleteJob: build.mutation({
+         query: ({ jobId }) => ({
+            url: `/api/job/delete/${jobId}`,
+            method: "DELETE",
+         }),
+      }),
    }),
 });
 
@@ -52,5 +58,6 @@ export const {
    useGetCompanyJobsQuery,
    useGetJobStatsQuery,
    useAddJobMutation,
-   useUpdateJobMutation
+   useUpdateJobMutation,
+   useDeleteJobMutation
 } = jobAPI;

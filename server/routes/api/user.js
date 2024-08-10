@@ -120,6 +120,14 @@ router.put("/", auth, async (req, res) => {
          new: true,
       });
 
+      if(req.body.companyName) {
+         await Recruiter.findOneAndUpdate({ query, companyName:req.body.companyName })
+      }
+
+      if(req.body.description) {
+         await Recruiter.findOneAndUpdate({ query, description:req.body.description })
+      }
+
       res.status(200).json({
          success: true,
          message: "Your profile is successfully updated!",
@@ -144,7 +152,7 @@ router.put(
    async (req, res) => {
       try {
          const userId = req.user._id;
-         const newUserData = req.body.profile;
+         const newUserData = req.body.profile ?? {};
          const query = { user: userId };
 
          if (req.user.role === ROLES.Candidate) {
@@ -190,6 +198,7 @@ router.put(
             });
          }
       } catch (error) {
+         console.log('error :>> ', error);
          res.status(400).json({
             error,
          });

@@ -8,7 +8,7 @@ import JobCard from "../../components/Cards/JobCard";
 import Pagination from "../../components/Core/Pagination";
 import Dropdown from "../../components/Forms/Dropdown";
 
-const excludedParams = ["sort", "limit", "page"];
+const excludedParams = ["sort", "limit", "page", "nav_type", "jobId"];
 
 function JobSearchPage() {
    const [searchParams, setSearchParams] = useSearchParams();

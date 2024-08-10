@@ -15,6 +15,7 @@ import JobsLayout from "../layout/JobsLayout";
 import SuggestedJobsPage from "../pages/JobsPages/SuggestedJobsPage.jsx";
 import SavedJobsPage from "../pages/JobsPages/SavedJobsPage.jsx";
 import VerifyPage from "../pages/AuthPages/VerifyPage.jsx";
+import AdminPage from "../pages/DashboardPages/AdminPage.jsx";
 
 const router = createBrowserRouter([
    {
@@ -64,12 +65,16 @@ const router = createBrowserRouter([
             element: <JobCreatePage />,
          },
          {
-            path: "company/job/manage",
+            path: "company/job/:jobId/manage",
             element: <JobManagePage />,
          },
          {
             path: "company/profile",
             element: <CompanyProfile />,
+         },
+         {
+            path: "dashboard",
+            element: <AdminPage />,
          },
       ],
    },

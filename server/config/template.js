@@ -66,4 +66,61 @@ exports.resetEmail = (host, resetToken) => {
     return message;
   };
   
+
+  exports.screeningEmail =  (data) => {
+    const message = {
+      subject: 'Application Update: Screening Process',
+      text: `Dear ${data.firstName} ${data.lastName}! \n\n ` +
+      `Thank you for applying for the ${data.jobTitle} position at ${data.company}. We are currently reviewing your application and will keep you informed as we progress through the screening process.\n\n` +
+      `We appreciate your interest in joining our team.\n\n` +
+      `Best regards,\n` + 
+      `${data.company}\n`
+    };
+  
+    return message;
+  };
+
+  exports.shortlistedEmail =  (data) => {
+    const message = {
+      subject: `Application Update: Shortlisted for ${data.jobTitle}`,
+      text: `Dear ${data.firstName} ${data.lastName}! \n\n ` +
+      `Congratulations! We are excited to inform you that you have been shortlisted for the ${data.jobTitle} position at ${data.company}. Our team is thoroughly impressed with your qualifications.\n\n` +
+      'We will be in touch shortly with the next steps.\n\n' +
+      `Thank you for your patience.\n\n` +
+      `Best regards,\n` + 
+      `${data.company}\n`
+    };
+  
+    return message;
+  };
+
+  exports.interviewEmail =  (data) => {
+    const message = {
+      subject: 'Application Update: Interview Invitation',
+      text: `Dear ${data.firstName} ${data.lastName}! \n\n ` +
+      `We are pleased to inform you that your application for the ${data.jobTitle} position has progressed to the interview stage.\n\n` +
+      'We will be in touch shortly with the next steps.\n\n' +
+      `Looking forward to our conversation.\n\n` +
+      `Best regards,\n` + 
+      `${data.company}\n`
+    };
+  
+    return message;
+  };
+
+  exports.rejectedEmail =  (data) => {
+    const message = {
+      subject: 'Application Update: Interview Invitation',
+      text: `Dear ${data.firstName} ${data.lastName}! \n\n ` +
+      `Thank you for your interest in the ${data.jobTitle} position at ${data.company}. After careful consideration, we regret to inform you that we will not be moving forward with your application at this time.\n\n` +
+      'We encourage you to apply for future openings that match your skills and experience.\n\n' +
+      `Thank you for the time and effort you invested in your application.\n\n` +
+      `Best regards,\n` + 
+      `${data.company}\n`
+    };
+  
+    return message;
+  };
+  
+  
   
