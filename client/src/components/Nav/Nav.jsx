@@ -14,7 +14,7 @@ import MobileNav from "./MobileNav";
 const routes = [
    {
       id: 1,
-      label: "job",
+      label: "jobs",
       path: "/recent-jobs",
       icon: <BriefcaseIcon className="h-5 w-5 text-primary flex-shrink" />,
    },

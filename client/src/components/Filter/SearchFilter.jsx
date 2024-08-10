@@ -36,7 +36,8 @@ const SearchFilter = ({ placeValue = "", searchValue }) => {
       }
 
       if (placeQuery !== "") {
-         searchParams.set("location", placeQuery);
+         const sanitizedPlaceQuery = placeQuery.label.replace(/,/g, "");
+         searchParams.set("location", sanitizedPlaceQuery);
       } else {
          searchParams.delete("location");
       }

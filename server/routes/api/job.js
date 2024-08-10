@@ -26,8 +26,9 @@ router.get("/list", async (req, res) => {
          date_posted,
          page = 1,
          limit = 10,
-         startDate, 
-         endDate
+         startDate,
+         endDate,
+         location
       } = req.query;
 
       let filterQuery = {
@@ -50,6 +51,12 @@ router.get("/list", async (req, res) => {
       if (query) {
          const queryRegex = new RegExp(query, "i");
          filterQuery.$or = [{ title: queryRegex }, { skillsets: { $in: [queryRegex] } }];
+      }
+
+      if(location) {
+         const firstWord = location.split(' ')[0];
+         const locationRegex = new RegExp(firstWord, "i");         
+         filterQuery["location"] = { $regex: locationRegex };
       }
 
       if (min_salary) {
@@ -86,12 +93,22 @@ router.get("/list", async (req, res) => {
          filterQuery.created = { $gte: new Date(Date.now() - date_posted * 24 * 60 * 60 * 1000) };
       }
 
-      if(startDate) {
-         filterQuery.created = { $gte: new Date(startDate) };
-      }
-
-      if(endDate) {
-         filterQuery.created = { $lte: new Date(endDate) };
+      if (startDate) {
+         const start = new Date(startDate);
+         start.setHours(0, 0, 0, 0); 
+      
+         if (endDate) {
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999); 
+      
+            filterQuery.created = { $gte: start, $lte: end };
+         } else {
+            filterQuery.created = { $gte: start };
+         }
+      } else if (endDate) {
+         const end = new Date(endDate);
+         end.setHours(23, 59, 59, 999); 
+         filterQuery.created = { $lte: end };
       }
 
       const pipeline = [
@@ -161,31 +178,28 @@ router.get("/detail/:jobId", async (req, res) => {
    try {
       const jobId = req.params.jobId;
 
-   
-      
-      const job = await Job.findOne({_id:jobId})
-      .populate({
-         path: 'user',
-         model: "Recruiter",
-         select: 'companyName logo' 
-      })
-      .populate({
-         path: 'category',
-         model: "Category",
-         select: 'name' 
-      });
+      const job = await Job.findOne({ _id: jobId })
+         .populate({
+            path: "user",
+            model: "Recruiter",
+            select: "companyName logo",
+         })
+         .populate({
+            path: "category",
+            model: "Category",
+            select: "name",
+         });
 
       res.status(200).json({
          data: job,
       });
    } catch (error) {
-      console.log('error', error)
+      console.log("error", error);
       res.status(400).json({
          error,
       });
    }
 });
-
 
 // fetch company jobs api
 router.get("/list/company", auth, async (req, res) => {
@@ -194,7 +208,7 @@ router.get("/list/company", auth, async (req, res) => {
 
       const recruiterDoc = await Recruiter.findOne({ user });
 
-      const jobs = await Job.find({ user: recruiterDoc._id, isRemoved: false})
+      const jobs = await Job.find({ user: recruiterDoc._id, isRemoved: false })
          .select("title activeApplications isActive isRemoved deadline created")
          .sort("-created");
 
@@ -218,7 +232,6 @@ router.get("/stats", async (req, res) => {
       const queryRegex = new RegExp(query, "i");
       filterQuery.$or = [{ title: queryRegex }, { skillsets: { $in: [queryRegex] } }];
    }
-   
 
    if (category) {
       let catId = new ObjectId(category);
@@ -228,54 +241,54 @@ router.get("/stats", async (req, res) => {
    try {
       const [jobTypes, modality, experienceLevel] = await Promise.all([
          Job.aggregate([
-             { $match: { isActive: true, isRemoved: false, ...filterQuery } },
-             {
-                 $group: {
-                     _id: "$jobType",
-                     count: { $sum: 1 },
-                 },
-             },
-             {
-                 $project: {
-                     label: "$_id",
-                     count: 1,
-                     _id: 0,
-                 },
-             },
+            { $match: { isActive: true, isRemoved: false, ...filterQuery } },
+            {
+               $group: {
+                  _id: "$jobType",
+                  count: { $sum: 1 },
+               },
+            },
+            {
+               $project: {
+                  label: "$_id",
+                  count: 1,
+                  _id: 0,
+               },
+            },
          ]),
          Job.aggregate([
-             { $match: { isActive: true, isRemoved: false, ...filterQuery } },
-             {
-                 $group: {
-                     _id: "$modality",
-                     count: { $sum: 1 },
-                 },
-             },
-             {
-                 $project: {
-                     label: "$_id",
-                     count: 1,
-                     _id: 0,
-                 },
-             },
+            { $match: { isActive: true, isRemoved: false, ...filterQuery } },
+            {
+               $group: {
+                  _id: "$modality",
+                  count: { $sum: 1 },
+               },
+            },
+            {
+               $project: {
+                  label: "$_id",
+                  count: 1,
+                  _id: 0,
+               },
+            },
          ]),
          Job.aggregate([
-             { $match: { isActive: true, isRemoved: false, ...filterQuery } },
-             {
-                 $group: {
-                     _id: "$experienceLevel",
-                     count: { $sum: 1 },
-                 },
-             },
-             {
-                 $project: {
-                     label: "$_id",
-                     count: 1,
-                     _id: 0,
-                 },
-             },
-         ])
-     ]);
+            { $match: { isActive: true, isRemoved: false, ...filterQuery } },
+            {
+               $group: {
+                  _id: "$experienceLevel",
+                  count: { $sum: 1 },
+               },
+            },
+            {
+               $project: {
+                  label: "$_id",
+                  count: 1,
+                  _id: 0,
+               },
+            },
+         ]),
+      ]);
 
       res.status(200).json({
          data: { jobTypes, modality, experienceLevel },
@@ -287,6 +300,61 @@ router.get("/stats", async (req, res) => {
    }
 });
 
+//company-report
+router.get("/company-report", async (req, res) => {
+   try {
+      const report = await Recruiter.aggregate([
+         {
+             $lookup: {
+                 from: "jobs",
+                 localField: "_id",
+                 foreignField: "user", 
+                 as: "jobs",
+                 pipeline: [
+                     { $match: { isActive: true, isRemoved: false } },
+                     {
+                         $lookup: {
+                             from: "applications",
+                             localField: "_id",
+                             foreignField: "job",
+                             as: "applications"
+                         }
+                     }
+                 ]
+             },
+         },
+         {
+             $lookup: {
+                 from: "users",
+                 localField: "user",
+                 foreignField: "_id",
+                 as: "user",
+             },
+         },
+         { $unwind: "$user" },
+         {
+             $project: {
+                 companyName: "$companyName",
+                 email: "$user.email",
+                 logo: "$logo",
+                 jobsPosted: { $size: "$jobs" }, 
+                 applicationsReceived: { $sum: { $size: "$jobs.applications" } }, 
+             },
+         },
+     ]);
+
+      res.status(200).json({
+         success: true,
+         report,
+      });
+   } catch (error) {
+      console.error("Error generating report:", error);
+      res.status(500).json({
+         success: false,
+         message: "Error generating report",
+      });
+   }
+});
 
 //add new jobs
 router.post("/add", auth, role.check(ROLES.Admin, ROLES.Recruiter), async (req, res) => {

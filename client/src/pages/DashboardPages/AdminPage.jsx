@@ -4,7 +4,7 @@ import {
 } from "@heroicons/react/24/outline";
 import {} from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useGetJobsQuery } from "../../services/jobService";
+import {  useGetJobsQuery } from "../../services/jobService";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ReportDocument from "../../components/Report/JobReport";
 
@@ -16,6 +16,7 @@ function AdminPage() {
     { refetchOnMountOrArgChange: true }
   );
 
+  
   const navigate = useNavigate();
 
   const handleFilterChange = (key, value) => {
@@ -83,7 +84,7 @@ function AdminPage() {
                       fileName="job_report.pdf"
                       className="button primary-outline-btn py-2 px-3"
                     >
-                      {({ blob, url, loading, error }) =>
+                      {({ loading }) =>
                         loading ? "Generating report..." : "Download Report"
                       }
                     </PDFDownloadLink>

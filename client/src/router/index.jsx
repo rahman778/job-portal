@@ -16,6 +16,7 @@ import SuggestedJobsPage from "../pages/JobsPages/SuggestedJobsPage.jsx";
 import SavedJobsPage from "../pages/JobsPages/SavedJobsPage.jsx";
 import VerifyPage from "../pages/AuthPages/VerifyPage.jsx";
 import AdminPage from "../pages/DashboardPages/AdminPage.jsx";
+import CompanyReportPage from "../pages/DashboardPages/CompanyReportPage.jsx";
 
 const router = createBrowserRouter([
    {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
          {
             path: "dashboard",
             element: <AdminPage />,
+         },
+         {
+            path: "all-companies",
+            element: <CompanyReportPage />,
          },
       ],
    },

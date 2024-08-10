@@ -61,7 +61,7 @@ const Avatar = ({
           <div
             className={`rounded-full ${size}  flex items-center justify-center bg-amber-600/20 p-2.5`}
           >
-            <span className="font-medium text-md">
+            <span className="font-medium text-md uppercase">
               {" "}
               {`${firstNameInitial}${lastNameInitial}`}
             </span>

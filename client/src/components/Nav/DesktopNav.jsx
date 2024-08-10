@@ -39,6 +39,22 @@ const DesktopNav = (props) => {
                   Company
                 </Link>
               )}
+              {profileData?.user?.role === ROLES.Admin && (
+                <Link
+                  to={"/all-companies"}
+                  className="inline-flex items-center text-md font-medium capitalize text-gray-700 dark:text-gray-100 hover:text-primary dark:hover:text-primary px-0.5 pt-1.5 pb-1 whitespace-nowrap menu-link"
+                >
+                  All Companies
+                </Link>
+              )}
+               {profileData?.user?.role === ROLES.Admin && (
+                <Link
+                  to={"/dashboard"}
+                  className="inline-flex items-center text-md font-medium capitalize text-gray-700 dark:text-gray-100 hover:text-primary dark:hover:text-primary px-0.5 pt-1.5 pb-1 whitespace-nowrap menu-link"
+                >
+                  Dashboard
+                </Link>
+              )}
             </div>
           </div>
           <div className="flex items-center ">

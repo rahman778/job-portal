@@ -10,22 +10,22 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-const ReportDocument = ({ jobs }) => (
+const CompanyReportDocument = ({ jobs }) => (
   <Document>
     <Page size="A4">
       <View style={styles.table}>
         <View style={[styles.tableRow, styles.tableHeader]}>
-          <Text style={styles.tableCol}>Title</Text>
-          <Text style={styles.tableCol}>Company</Text>
-          <Text style={styles.tableCol}>Applications</Text>
-          <Text style={styles.tableCol}>Published Date</Text>
+          <Text style={styles.tableCol}>Company Name</Text>
+          <Text style={styles.tableCol}>Company Email</Text>
+          <Text style={styles.tableCol}>No of Job Posted</Text>
+          <Text style={styles.tableCol}> Applications</Text>
         </View>
         {jobs?.map((job, index) => (
           <View style={styles.tableRow} key={index}>
-            <Text style={styles.tableCell}>{job.title}</Text>
-            <Text style={styles.tableCell}>{job.company.companyName}</Text>
-            <Text style={styles.tableCell}>{job.activeApplications}</Text>
-            <Text style={styles.tableCell}>{job.created.split("T")[0]}</Text>
+            <Text style={styles.tableCell}>{job.companyName}</Text>
+            <Text style={styles.tableCell}>{job.email}</Text>
+            <Text style={styles.tableCell}>{job.applicationsReceived}</Text>
+            <Text style={styles.tableCell}>{job.jobsPosted.length || 0}</Text>
           </View>
         ))}
       </View>
@@ -33,4 +33,4 @@ const ReportDocument = ({ jobs }) => (
   </Document>
 );
 
-export default ReportDocument;
+export default CompanyReportDocument;

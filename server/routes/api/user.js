@@ -96,7 +96,10 @@ router.get("/me", auth, async (req, res) => {
             select: "-password -accountConfirmToken",
          });
       } else {
-         userDoc = await User.findById(user, { password: 0 });
+         const response = await User.findById(user, { password: 0 });
+
+         userDoc = { user:response };
+
       }
 
       res.status(200).json({
