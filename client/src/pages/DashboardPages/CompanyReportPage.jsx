@@ -70,11 +70,11 @@ function CompanyReport() {
                             <span className="">{job.email}</span>
                           </td>
                           <td className="text-center">
-                            <span>{job.applicationsReceived}</span>
+                            <span>{job.jobsPosted}</span>
                           </td>
 
                           <td className="text-center">
-                            <span>{job.jobsPosted.length || 0}</span>
+                            <span>{job.applicationsReceived}</span>
                           </td>
 
                           <td className="text-end flex items-center justify-end h-[63px]"></td>

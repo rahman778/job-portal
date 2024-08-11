@@ -87,6 +87,7 @@ router.get("/count", async (req, res) => {
                count: "$count",
             },
          },
+         { $sort: { count: -1 } },
       ]);
 
       res.status(200).json({

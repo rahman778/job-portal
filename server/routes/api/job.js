@@ -25,7 +25,7 @@ router.get("/list", async (req, res) => {
          experience_level,
          date_posted,
          page = 1,
-         limit = 10,
+         limit = 20,
          startDate,
          endDate,
          location
@@ -308,7 +308,7 @@ router.get("/company-report", async (req, res) => {
              $lookup: {
                  from: "jobs",
                  localField: "_id",
-                 foreignField: "user", 
+                 foreignField: "user",
                  as: "jobs",
                  pipeline: [
                      { $match: { isActive: true, isRemoved: false } },
@@ -317,10 +317,10 @@ router.get("/company-report", async (req, res) => {
                              from: "applications",
                              localField: "_id",
                              foreignField: "job",
-                             as: "applications"
-                         }
-                     }
-                 ]
+                             as: "applications",
+                         },
+                     },
+                 ],
              },
          },
          {
@@ -333,12 +333,25 @@ router.get("/company-report", async (req, res) => {
          },
          { $unwind: "$user" },
          {
+             $addFields: {
+                 applicationsReceived: {
+                     $sum: {
+                         $map: {
+                             input: "$jobs",
+                             as: "job",
+                             in: { $size: "$$job.applications" },
+                         },
+                     },
+                 },
+             },
+         },
+         {
              $project: {
-                 companyName: "$companyName",
+                 companyName: 1,
                  email: "$user.email",
-                 logo: "$logo",
-                 jobsPosted: { $size: "$jobs" }, 
-                 applicationsReceived: { $sum: { $size: "$jobs.applications" } }, 
+                 logo: 1,
+                 jobsPosted: { $size: "$jobs" },
+                 applicationsReceived: 1,
              },
          },
      ]);

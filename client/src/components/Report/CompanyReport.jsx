@@ -24,8 +24,8 @@ const CompanyReportDocument = ({ jobs }) => (
           <View style={styles.tableRow} key={index}>
             <Text style={styles.tableCell}>{job.companyName}</Text>
             <Text style={styles.tableCell}>{job.email}</Text>
-            <Text style={styles.tableCell}>{job.applicationsReceived}</Text>
-            <Text style={styles.tableCell}>{job.jobsPosted.length || 0}</Text>
+            <Text style={styles.tableCell}>{job.jobsPosted}</Text>
+            <Text style={styles.tableCell}>{job.applicationsReceived || 0}</Text>
           </View>
         ))}
       </View>

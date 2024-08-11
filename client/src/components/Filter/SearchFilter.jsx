@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { useDebounce } from "use-debounce";
+import { useSelector } from "react-redux";
 
 import {
    MagnifyingGlassIcon,
@@ -11,14 +12,20 @@ import {
    XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useGetSkillsQuery } from "../../services/skillService";
+import { useUpdateProfileMutation } from "../../services/userService";
 
 const SearchFilter = ({ placeValue = "", searchValue }) => {
    const navigate = useNavigate();
+
+   const { isSignedIn } = useSelector((state) => state.auth);
+
    const [searchParams] = useSearchParams();
 
    const [placeQuery, setPlaceQuery] = useState("");
    const [searchQuery, setSearchQuery] = useState(searchValue || "");
    const [showSearchSuggestion, setShowSearchSuggestion] = useState(false);
+
+   const [udpateProfile] = useUpdateProfileMutation();
 
    const [searchTerm] = useDebounce(searchQuery, 300);
 
@@ -26,11 +33,21 @@ const SearchFilter = ({ placeValue = "", searchValue }) => {
       skip: searchTerm === "" || searchTerm.length < 3,
    });
 
-   const handleFormSubmit = (e) => {
+   const handleFormSubmit = async (e) => {
       e.preventDefault();
 
       if (searchQuery !== "") {
          searchParams.set("query", searchQuery);
+
+         if(isSignedIn) {
+            let formData = new FormData();
+            formData.append("profile[searchTerms]", searchQuery);
+   
+            await udpateProfile({
+               values: formData,
+             });
+         }
+
       } else {
          searchParams.delete("query");
       }
@@ -72,7 +89,7 @@ const SearchFilter = ({ placeValue = "", searchValue }) => {
                   className="w-full text-black dark:text-white text-md py-4 pl-12 pr-6 bg-white dark:bg-mediumGrey border-0 rounded-r-[30px] sm:rounded-r-[0px] rounded-l-[30px] border-r border-gray-200 dark:border-gray-600 focus:ring-0 focus:border-inherit"
                   type="text"
                   value={searchQuery}
-                  placeholder="Job tilte or keywords"
+                  placeholder="Job title or keywords"
                   onFocus={() => setShowSearchSuggestion(true)}
                   onBlur={() => setShowSearchSuggestion(false)}
                   onChange={(e) => setSearchQuery(e.target.value)}

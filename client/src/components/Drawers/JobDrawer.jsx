@@ -137,7 +137,7 @@ const JobDrawer = () => {
               <div className="border-b border-slate-200">
                 <h6 className="text-lg font-medium px-6 mb-4">Skills</h6>
               </div>
-              <div className="flex flex-wrap items-center gap-x-3 px-6 mt-5">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-3 px-6 mt-5">
                 {job?.skillsets?.map((skill, idx) => (
                   <Tags name={skill} key={idx} />
                 ))}

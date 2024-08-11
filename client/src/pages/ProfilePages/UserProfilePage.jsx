@@ -184,8 +184,7 @@ function UserProfile() {
                   <div className="flex flex-row gap-x-3">
                     <img
                       alt="Logo"
-                      //src="@/assets/logo.svg?url"
-                      src={"https://placehold.co/600x400/000000/FFF"}
+                      src={data?.job.user?.logo ?? "https://placehold.co/600x400/000000/FFF"}
                       width="45"
                       height="45"
                     />
