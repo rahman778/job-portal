@@ -7,6 +7,8 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {  useGetJobsQuery } from "../../services/jobService";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ReportDocument from "../../components/Report/JobReport";
+import Dropdown from "../../components/Forms/Dropdown";
+import { useGetCategoriesQuery } from "../../services/categoryService";
 
 function AdminPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,6 +17,8 @@ function AdminPage() {
     searchParams.toString().replace(/%2C/g, ","),
     { refetchOnMountOrArgChange: true }
   );
+
+  const { data: categories } = useGetCategoriesQuery();
 
   
   const navigate = useNavigate();
@@ -32,6 +36,12 @@ function AdminPage() {
       return prevParams;
     });
   };
+
+
+  const getCategoryName = (catId) => {
+    const category = categories.find(cat => cat._id === catId)
+    return category.name
+  }
 
   return (
     <section className="max-w-6xl xl:max-w-screen-xl 2xl:max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-10">
@@ -71,6 +81,21 @@ function AdminPage() {
                       />
                     </div>
 
+                    <div>
+                      <Dropdown
+                        options={categories?.map((category) => ({
+                          value: category._id,
+                          label: category.name,
+                        }))}
+                        placeholder="Category"
+                        selectedItem={searchParams.get("category") || ""}
+                        onChange={(option) =>
+                          handleFilterChange("category", option)
+                        }
+                        labelText="Job Category"
+                      />
+                    </div>
+
                     <Link
                       to={`/dashboard`}
                       className="text-sm font-medium text-emerald-600 hover:text-emerald-500 cursor-pointer"
@@ -80,7 +105,7 @@ function AdminPage() {
                   </div>
                   <div className="">
                     <PDFDownloadLink
-                      document={<ReportDocument jobs={jobs?.data} />}
+                      document={<ReportDocument jobs={jobs?.data} categories={categories}/>}
                       fileName="job_report.pdf"
                       className="button primary-outline-btn py-2 px-3"
                     >
@@ -100,6 +125,9 @@ function AdminPage() {
                         </th>
                         <th className="pb-3 text-center min-w-[100px] font-medium">
                           Company
+                        </th>
+                        <th className="pb-3 text-center min-w-[100px] font-medium">
+                          Category
                         </th>
                         <th className="pb-3 text-center min-w-[100px] font-medium">
                           APPLICATIONS
@@ -126,6 +154,9 @@ function AdminPage() {
                           </td>
                           <td className="text-center">
                             <span className="">{job.company.companyName}</span>
+                          </td>
+                          <td className="text-center">
+                            <span className="">{getCategoryName(job.category)}</span>
                           </td>
                           <td className="text-center">
                             <span>{job.activeApplications}</span>

@@ -17,7 +17,6 @@ router.get("/list", async (req, res) => {
          sort,
          max_salary,
          min_salary,
-         category,
          salary_currency = "LKR",
          job_type,
          modality,
@@ -28,7 +27,8 @@ router.get("/list", async (req, res) => {
          limit = 20,
          startDate,
          endDate,
-         location
+         location,
+         category,
       } = req.query;
 
       let filterQuery = {
